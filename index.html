@@ -3,168 +3,278 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1F3864">
+<meta name="theme-color" content="#4f46e5">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Placement">
-<meta name="description" content="Track theory and coding progress for the 9–30 Oct placement plan.">
-<title>Placement Prep Tracker</title>
+<meta name="description" content="Placement prep dashboard: theory and coding progress, 9–30 Oct 2026.">
+<title>Placement Prep Dashboard</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
-  :root {
-    --navy: #1F3864; --navy-2: #2d4f8a; --accent: #4f7cd6;
-    --bg1: #eef2f8; --bg2: #e3eaf6; --card: #ffffff; --line: #dbe2ee;
-    --text: #1d2433; --muted: #6b7486;
-    --done: #2e7d32; --prog: #ef6c00; --rev: #c62828; --ns: #9aa3b2;
-    --must-bg: #fde2e1; --must-fg: #8b1a1a; --imp-bg: #fff2cc; --imp-fg: #7a5a00;
-    --radius: 14px; --shadow: 0 1px 2px rgba(20,30,60,.06), 0 4px 14px rgba(20,30,60,.06);
-  }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    color: var(--text); font-size: 15px; line-height: 1.4;
-    background: radial-gradient(1200px 600px at 10% -10%, #dfe8fb 0%, transparent 60%),
-                radial-gradient(900px 500px at 110% 0%, #e6dcf6 0%, transparent 55%),
-                linear-gradient(180deg, var(--bg1), var(--bg2));
-    background-attachment: fixed;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  .app-header {
-    position: sticky; top: 0; z-index: 10;
-    background: linear-gradient(135deg, var(--navy), var(--navy-2));
-    color: #fff; padding: calc(env(safe-area-inset-top) + 14px) 18px 14px;
-    box-shadow: 0 4px 18px rgba(20,40,90,.25);
-  }
-  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .brand img { width: 34px; height: 34px; border-radius: 9px; }
-  .brand h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: .2px; }
-  .brand small { display: block; opacity: .75; font-size: 12px; font-weight: 400; }
-  .overall { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .bar { height: 10px; background: #ffffff26; border-radius: 99px; overflow: hidden; flex: 1; min-width: 120px; }
-  .bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #7ddc8a, #3fbf5b); transition: width .3s ease; }
-  .pill { background: #ffffff1f; padding: 4px 10px; border-radius: 99px; font-size: 12px; white-space: nowrap; }
-  .pill.warn { background: #ff8a8033; color: #ffe0de; }
-  nav.tabs {
-    display: flex; gap: 6px; padding: 10px 12px; overflow-x: auto; position: sticky; top: 0;
-    background: rgba(255,255,255,.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line); z-index: 9; scrollbar-width: none;
-  }
-  nav.tabs::-webkit-scrollbar { display: none; }
-  nav.tabs button {
-    border: none; background: transparent; padding: 8px 14px; border-radius: 99px; cursor: pointer;
-    color: var(--muted); font-size: 14px; font-weight: 600; white-space: nowrap;
-  }
-  nav.tabs button.active { background: var(--navy); color: #fff; box-shadow: 0 2px 8px rgba(31,56,100,.3); }
-  .toolbar { display: flex; gap: 6px; margin-left: auto; align-items: center; }
-  .btn {
-    border: 1px solid #c7d2e6; background: #fff; color: var(--navy); padding: 7px 11px; border-radius: 10px;
-    cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap;
-  }
-  .btn:hover { border-color: var(--accent); }
-  .btn.danger { color: var(--rev); }
-  main { padding: 16px 14px calc(40px + env(safe-area-inset-bottom)); max-width: 1100px; margin: 0 auto; }
-  .card {
-    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-    border: 1px solid rgba(219,226,238,.8); padding: 14px 16px; margin-bottom: 12px;
-  }
-  .card h3 { margin: 0 0 6px; font-size: 16px; color: var(--navy); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .card.today { border: 2px solid var(--accent); }
-  .meta { color: var(--muted); font-size: 12.5px; }
-  .progress-line { display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; }
-  .progress-line .bar { background: #e6ebf3; height: 8px; }
-  .progress-line .bar > span { background: linear-gradient(90deg, #7ddc8a, #2e7d32); }
-  .stat { font-size: 12px; color: var(--muted); white-space: nowrap; }
-  details { margin-top: 8px; }
-  summary { cursor: pointer; color: var(--navy); font-size: 13px; font-weight: 600; padding: 6px 0; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  summary::before { content: "▸ "; }
-  details[open] > summary::before { content: "▾ "; }
-  .topic { margin: 14px 0 6px; font-weight: 700; color: var(--text); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .row {
-    display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start;
-    padding: 9px 10px; border-radius: 10px; margin-bottom: 6px; background: #f7f9fc; border-left: 4px solid var(--ns);
-  }
-  .row .res { font-weight: 600; font-size: 13.5px; }
-  .row .follow { white-space: pre-line; color: #4a5366; font-size: 12.5px; margin-top: 3px; }
-  .row.st-Done { border-left-color: var(--done); background: #f1f8f2; }
-  .row.st-In-progress { border-left-color: var(--prog); background: #fff7ee; }
-  .row.st-Revise-again { border-left-color: var(--rev); background: #fdf1f1; }
-  .row.st-Done .res { color: #5b6475; text-decoration: line-through; text-decoration-color: #9aa3b2; }
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-  .tag.must { background: var(--must-bg); color: var(--must-fg); }
-  .tag.imp { background: var(--imp-bg); color: var(--imp-fg); }
-  .tag.ext { background: #ffe9e9; color: #c00000; font-style: normal; }
-  .status {
-    border: 1px solid #c7d2e6; border-radius: 10px; padding: 7px 8px; font-size: 13px;
-    background: #fff; color: var(--text); min-width: 118px; font-family: inherit;
-  }
-  .overdue { background: #fdecec; color: var(--rev); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
-  .todaypill { background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
-  .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 10px; }
-  .filters input, .filters select {
-    padding: 9px 10px; border: 1px solid #c7d2e6; border-radius: 10px; font-size: 14px; background: #fff; font-family: inherit; width: 100%;
-  }
-  .table-wrap { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: auto; max-height: 68vh; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #eef2f8; vertical-align: top; font-size: 13px; }
-  th { background: var(--navy); color: #fff; position: sticky; top: 0; font-weight: 600; }
-  td.follow { white-space: pre-line; color: #4a5366; font-size: 12px; }
-  tr.st-Done td { color: #6b7486; }
-  .addon { margin-top: 6px; font-size: 12px; color: #4a5366; background: #f1f4fa; padding: 7px 9px; border-radius: 8px; white-space: pre-wrap; }
-  .legend { font-size: 12.5px; color: var(--muted); margin: 2px 0 12px; }
-  .hidden { display: none !important; }
-  .empty { color: var(--muted); text-align: center; padding: 22px; }
-  .footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 24px; }
-  @media (min-width: 760px) {
-    main { padding-top: 22px; }
-    .row { padding: 10px 12px; }
-  }
-  @media (max-width: 560px) {
-    .toolbar { margin-left: 0; width: 100%; justify-content: flex-start; }
-    .status { min-width: 0; width: 100%; }
-    .row { grid-template-columns: 1fr; }
-  }
+:root{
+  --bg:#f3f5fb; --bg-grad:linear-gradient(160deg,#eef2ff 0%,#f8f1ff 45%,#eefbf6 100%);
+  --card:rgba(255,255,255,.92); --card-solid:#ffffff; --line:#e4e8f3; --text:#161b2e; --muted:#6b7394;
+  --primary:#4f46e5; --primary-2:#7c3aed; --accent:#06b6d4;
+  --done:#10b981; --prog:#f59e0b; --rev:#ef4444; --ns:#94a3b8;
+  --must-bg:#ffe4e6; --must-fg:#9f1239; --imp-bg:#fef3c7; --imp-fg:#92400e;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 10px 30px -12px rgba(79,70,229,.25);
+  --radius:20px;
+}
+body.dark{
+  --bg:#0b1020; --bg-grad:linear-gradient(160deg,#0b1020 0%,#14102b 50%,#06201c 100%);
+  --card:rgba(22,28,48,.92); --card-solid:#161c30; --line:#262e4a; --text:#e7eaf7; --muted:#8c94b5;
+  --must-bg:#4c0519; --must-fg:#fecdd3; --imp-bg:#422006; --imp-fg:#fde68a;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 34px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);
+  background:var(--bg-grad) fixed;font-size:15px;line-height:1.45;padding-bottom:env(safe-area-inset-bottom)}
+button,input,select{font-family:inherit}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:calc(env(safe-area-inset-top) + 12px) 18px 12px;
+  background:linear-gradient(135deg,rgba(79,70,229,.96),rgba(124,58,237,.96) 55%,rgba(6,182,212,.92));
+  color:#fff;box-shadow:0 8px 30px -10px rgba(79,70,229,.6)}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand img{width:38px;height:38px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.brand h1{margin:0;font-size:18px;font-weight:800;letter-spacing:.2px}
+.brand small{display:block;opacity:.85;font-size:12px;font-weight:500}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.chip-btn{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;
+  padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px)}
+.chip-btn:hover{background:rgba(255,255,255,.24)}
+.chip-btn.danger{background:rgba(239,68,68,.25)}
+
+nav.tabs{position:sticky;top:0;z-index:19;display:flex;gap:6px;padding:10px 14px;overflow-x:auto;scrollbar-width:none;
+  background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{border:none;background:transparent;padding:9px 16px;border-radius:999px;cursor:pointer;
+  color:var(--muted);font-size:14px;font-weight:700;white-space:nowrap;transition:.2s}
+nav.tabs button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 18px -6px var(--primary)}
+nav.tabs button:not(.active):hover{color:var(--text)}
+
+main{max-width:1200px;margin:0 auto;padding:18px 14px 60px}
+.hidden{display:none!important}
+.grid{display:grid;gap:14px}
+.g-4{grid-template-columns:repeat(4,1fr)}
+.g-2{grid-template-columns:1fr 1fr}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:18px;animation:rise .45s ease both}
+.card h2{margin:0 0 4px;font-size:16px;font-weight:800}
+.card .sub{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.section{font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin:22px 4px 10px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;
+  background:linear-gradient(135deg,rgba(79,70,229,.12),rgba(6,182,212,.10));}
+.hero .quote{font-size:18px;font-weight:800;margin:0 0 6px}
+.hero .meta{color:var(--muted);font-size:13px}
+.hero .countdown{display:inline-flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pill{background:var(--card-solid);border:1px solid var(--line);padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.hot{background:#fee2e2;color:#b91c1c;border-color:#fecaca}
+body.dark .pill.hot{background:#450a0a;color:#fecaca;border-color:#7f1d1d}
+
+/* stat tiles */
+.stat{position:relative;overflow:hidden;padding:16px 18px}
+.stat .label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.stat .num{font-size:30px;font-weight:900;margin-top:4px;letter-spacing:-.5px}
+.stat .foot{font-size:12px;color:var(--muted);margin-top:2px}
+.stat::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;opacity:.14;background:var(--c,#4f46e5)}
+.stat .num{color:var(--c,var(--text))}
+
+/* rings & bars */
+.ring{position:relative;display:inline-grid;place-items:center}
+.ring span{position:absolute;font-weight:900}
+.bar{height:12px;border-radius:999px;background:rgba(148,163,184,.22);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.bar.thin{height:8px}
+.bar.green>i{background:linear-gradient(90deg,#34d399,#10b981)}
+.bar.amber>i{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.seg{display:flex;height:14px;border-radius:999px;overflow:hidden;background:rgba(148,163,184,.2)}
+.seg>i{display:block;height:100%;transition:width .6s ease}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* timeline chart */
+.chart{display:flex;align-items:flex-end;gap:6px;height:190px;padding-top:10px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;min-width:0}
+.col .bar-v{width:100%;border-radius:8px 8px 4px 4px;background:rgba(148,163,184,.22);position:relative;overflow:hidden;transition:height .6s ease;min-height:6px}
+.col .bar-v>i{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,var(--accent),var(--primary));border-radius:8px 8px 0 0;transition:height .6s ease}
+.col .d{font-size:10.5px;color:var(--muted);font-weight:700}
+.col.today .d{color:var(--primary);font-weight:900}
+.col.today .bar-v{outline:2px dashed var(--primary);outline-offset:2px}
+.col:hover .bar-v{filter:brightness(1.08)}
+
+/* area cards */
+.area{display:flex;gap:14px;align-items:center;padding:14px}
+.area .info{flex:1;min-width:0}
+.area .name{font-weight:800;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.area .tab{font-size:11px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.6px}
+.area .numbers{font-size:12px;color:var(--muted);margin:6px 0 8px}
+.area .more{margin-top:10px}
+details.topics summary{cursor:pointer;color:var(--primary);font-size:13px;font-weight:800;list-style:none;margin-top:8px}
+details.topics summary::-webkit-details-marker{display:none}
+details.topics summary::before{content:"▸ ";}
+details.topics[open] summary::before{content:"▾ "}
+
+/* topics */
+.topic{margin:14px 0 6px;font-weight:800;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px}
+.tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.tag.must{background:var(--must-bg);color:var(--must-fg)}
+.tag.imp{background:var(--imp-bg);color:var(--imp-fg)}
+.tag.ext{background:#fee2e2;color:#b91c1c}
+body.dark .tag.ext{background:#450a0a;color:#fecaca}
+
+/* item rows */
+.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:12px 14px;border-radius:14px;margin-bottom:8px;
+  background:var(--card-solid);border:1px solid var(--line);border-left:5px solid var(--ns);transition:.2s}
+.row:hover{transform:translateY(-1px);box-shadow:0 8px 20px -12px rgba(15,23,42,.35)}
+.row .res{font-weight:700;font-size:14px}
+.row .follow{white-space:pre-line;color:var(--muted);font-size:12.5px;margin-top:4px}
+.row .meta{color:var(--muted);font-size:12px;margin-bottom:3px}
+.row.st-Done{border-left-color:var(--done)}
+.row.st-Done .res{text-decoration:line-through;color:var(--muted)}
+.row.st-In-progress{border-left-color:var(--prog)}
+.row.st-Revise-again{border-left-color:var(--rev)}
+.status{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700;background:var(--card-solid);color:var(--text);min-width:130px;cursor:pointer}
+.addon{margin-top:8px;font-size:12px;color:var(--muted);background:rgba(148,163,184,.12);padding:9px 11px;border-radius:12px}
+.addon strong{color:var(--text)}
+
+/* day timeline */
+.day{display:grid;grid-template-columns:86px 1fr;gap:14px;margin-bottom:14px}
+.day .date{text-align:center;border-radius:18px;padding:12px 6px;background:linear-gradient(160deg,var(--primary),var(--primary-2));color:#fff;align-self:start}
+.day.today .date{box-shadow:0 0 0 3px rgba(79,70,229,.35)}
+.day .date .dow{font-size:11px;font-weight:800;opacity:.9;text-transform:uppercase}
+.day .date .dn{font-size:26px;font-weight:900;line-height:1.1}
+.day .date .mo{font-size:11px;font-weight:700;opacity:.9}
+.day.late .date{background:linear-gradient(160deg,#ef4444,#f97316)}
+.day.future .date{background:linear-gradient(160deg,#64748b,#94a3b8)}
+.day .head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.day .head .title{font-weight:800}
+.empty{color:var(--muted);padding:14px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+
+/* all items table */
+.filters{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:8px;margin-bottom:12px}
+.filters input,.filters select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:var(--card-solid);color:var(--text);font-size:14px}
+.table-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:auto;max-height:70vh;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px}
+th{position:sticky;top:0;background:var(--card-solid);color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;z-index:1}
+td.follow{white-space:pre-line;color:var(--muted);font-size:12px}
+tr.st-Done td{color:var(--muted)}
+tr.st-Done td.res-cell{text-decoration:line-through}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:#111827;color:#fff;
+  padding:12px 18px;border-radius:14px;font-weight:700;box-shadow:0 14px 40px -10px rgba(0,0,0,.5);transition:transform .35s ease;z-index:50;font-size:14px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.top-grid{grid-template-columns:1.4fr 1fr}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:26px}
+
+@media (max-width:900px){.g-4{grid-template-columns:repeat(2,1fr)}.g-3{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){
+  .top-grid,.g-2,.g-3{grid-template-columns:1fr}
+  .hero{padding:16px}
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .hero .countdown{justify-content:center}
+  .day{grid-template-columns:70px 1fr}
+  .row{grid-template-columns:1fr}
+  .status{min-width:0;width:100%}
+  .brand small{display:none}
+  .chart{height:150px;gap:3px}
+  .col .d{font-size:9px}
+  .filters{grid-template-columns:1fr}
+  .stat .num{font-size:24px}
+}
 </style>
 </head>
 <body>
-<header class="app-header">
+
+<header class="topbar">
   <div class="brand">
     <img src="icons/icon-192.png" alt="">
     <div><h1>Placement Prep</h1><small>Theory + coding · 9–30 Oct 2026</small></div>
   </div>
-  <div class="overall">
-    <div class="bar"><span id="overallBar" style="width:0%"></span></div>
-    <span class="pill" id="overallText"></span>
-    <span class="pill warn" id="overdueText"></span>
-  </div>
-</header>
-<nav class="tabs">
-  <button data-tab="area" class="active">By area</button>
-  <button data-tab="date">By date</button>
-  <button data-tab="all">All items</button>
-  <div class="toolbar">
-    <button class="btn" id="exportBtn">Export</button>
-    <button class="btn" id="importBtn">Import</button>
-    <button class="btn danger" id="resetBtn">Reset</button>
+  <div class="tools">
+    <button class="chip-btn" id="themeBtn" title="Toggle dark mode">🌙 Dark</button>
+    <button class="chip-btn" id="exportBtn">⬇ Export</button>
+    <button class="chip-btn" id="importBtn">⬆ Import</button>
+    <button class="chip-btn danger" id="resetBtn">Reset</button>
     <input type="file" id="importFile" accept="application/json" class="hidden">
   </div>
+</header>
+
+<nav class="tabs">
+  <button data-tab="dash" class="active">📊 Dashboard</button>
+  <button data-tab="area">🧭 By area</button>
+  <button data-tab="date">📅 By date</button>
+  <button data-tab="all">🗂 All items</button>
 </nav>
+
 <main>
-  <section id="view-area"></section>
-  <section id="view-date" class="hidden"></section>
+  <!-- DASHBOARD -->
+  <section id="view-dash">
+    <div class="grid top-grid">
+      <div class="card hero">
+        <div class="ring" id="heroRing"></div>
+        <div>
+          <p class="quote" id="quote"></p>
+          <div class="meta" id="heroMeta"></div>
+          <div class="countdown" id="countdown"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Status breakdown</h2>
+        <div class="sub">Every topic row, by status</div>
+        <div class="seg" id="segBar"></div>
+        <div class="legend" id="segLegend"></div>
+        <div style="margin-top:18px">
+          <h2 style="font-size:14px">Theory vs coding</h2>
+          <div class="sub" id="tcText"></div>
+          <div class="bar"><i id="tcBar" style="width:0%"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">Key numbers</div>
+    <div class="grid g-4" id="statTiles"></div>
+
+    <div class="section">Daily timeline · items per day</div>
+    <div class="card">
+      <h2>9 → 30 Oct</h2>
+      <div class="sub">Bar height = items planned that day · fill = how much is done · dashed box = today</div>
+      <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="section">Areas at a glance</div>
+    <div class="grid g-3" id="areaGrid"></div>
+  </section>
+
+  <!-- BY AREA -->
+  <section id="view-area" class="hidden"><div id="areaList"></div></section>
+
+  <!-- BY DATE -->
+  <section id="view-date" class="hidden"><div id="dateList"></div></section>
+
+  <!-- ALL ITEMS -->
   <section id="view-all" class="hidden">
     <div class="filters">
-      <input id="search" type="search" placeholder="Search topic or resource…">
+      <input id="search" type="search" placeholder="🔍  Search topic or resource…">
       <select id="fTab"><option value="">All tabs</option><option>Theory</option><option>Coding</option></select>
       <select id="fArea"><option value="">All areas</option></select>
       <select id="fPrio"><option value="">Must + Important</option><option>Must</option><option>Important</option></select>
       <select id="fStatus"><option value="">Any status</option></select>
     </div>
-    <div class="meta" id="allCount" style="margin-bottom:8px"></div>
+    <div class="sub" id="allCount" style="margin:0 4px 8px;color:var(--muted);font-size:13px"></div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Date</th><th>Tab</th><th>Area</th><th>Topic</th><th>Priority</th><th>Resource</th><th>What to follow</th><th>Status</th></tr></thead>
@@ -172,211 +282,263 @@
       </table>
     </div>
   </section>
-  <div class="footer">Progress is saved on this device. Use Export to back it up.</div>
+
+  <div class="footer">Progress is saved privately on this device only · Export to back it up</div>
 </main>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const ITEMS = [{"id": "a8542da0ca", "tab": "Theory", "area": "1. Classical ML", "topic": "Data prep: feature scaling & encoding, pipelines", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#23 What is Feature Engineering\n#24 Feature Scaling – Standardization\n#25 Normalization\n#26 Ordinal/Label Encoding\n#27 One-Hot Encoding\n#28 Column Transformer\n#29 ML Pipelines A–Z", "source": "Your resources", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "1) TuteDude — Generative AI course\n2) CodeWithHarry — The Ultimate Job Ready Data Science Course", "addonFollow": "1) Module 12 — L16 Feature Engineering · L17 Feature Encoding · L18 One Hot Encoder · L19 Feature Scaling · L20 Column Transformer · L21 ML Pipeline\n2) §16 Practical ML using Scikit-learn — 'Handling Categorical values', 'Feature scaling in sklearn', 'Constructing Pipelines in sklearn', 'ColumnTransformer and Consolidating the Pipeline'"}, {"id": "d5aa032584", "tab": "Theory", "area": "1. Classical ML", "topic": "Data prep: missing values & outliers", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§16 — 'Further Preprocessing & Handling Missing Data'", "source": "Your resources", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "1) CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)\n2) TuteDude — Generative AI course", "addonFollow": "1) #35 Complete Case Analysis · #36 Simple Imputer (numerical) · #37 Missing categorical data · #39 KNN Imputer · #40 MICE (optional); #41 What are Outliers · #42 Z-score method · #43 IQR method · #44 Percentile / Winsorization (optional)\n2) Module 12 — L11 Data Cleaning · L13 Automated Data Cleaning · L14–15 EDA steps"}, {"id": "c465fd5b27", "tab": "Theory", "area": "1. Classical ML", "topic": "Data prep: multicollinearity & VIF", "priority": "Must", "resource": "Penn State STAT 501 — Regression Methods (online notes)", "follow": "Lesson 12: Multicollinearity — 12.3 & 12.4 (detecting multicollinearity using VIF)", "source": "External (gap-filler)", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "", "addonFollow": ""}, {"id": "46e8bd36f4", "tab": "Theory", "area": "1. Classical ML", "topic": "Data prep: multicollinearity & VIF", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Feature engineering — Intuit VIF/correlation Qs (3), Airtel VIF, Wells Fargo correlated features", "source": "Your resources", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "", "addonFollow": ""}, {"id": "583c4d52ff", "tab": "Theory", "area": "1. Classical ML", "topic": "Data prep: cross-validation & data leakage", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 12 — L22 Train vs Validation vs Test Data & Cross Validation", "source": "Your resources", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "1) CodeWithHarry — The Ultimate Job Ready Data Science Course\n2) StatQuest with Josh Starmer (YouTube) (external)\n3) scikit-learn User Guide (external)", "addonFollow": "1) §16 — 'Creating a Test Set' · 'Stratified Shuffle Split'\n2) 'Machine Learning Fundamentals: Cross Validation'\n3) 'Common pitfalls and recommended practices' → Data leakage section"}, {"id": "b677feb66c", "tab": "Theory", "area": "1. Classical ML", "topic": "Data prep: cross-validation & data leakage", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Feature engineering & data preparation — all 15 Qs (Intuit StandardScaler-before-split, Razorpay full pipeline)", "source": "Your resources", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "", "addonFollow": ""}, {"id": "f4afeaf4af", "tab": "Theory", "area": "1. Classical ML", "topic": "Linear regression: assumptions, closed form vs GD, MLE view, R²", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#50 Simple LR (code + intuition)\n#51 Simple LR maths from scratch\n#53 Multiple LR intuition\n#54 Multiple LR maths\n#55 Multiple LR code from scratch\n#56 Assumptions of Linear Regression\n#57 Gradient Descent from scratch\n#58 Batch GD\n#59 Stochastic GD\n#60 Mini-batch GD", "source": "Your resources", "date": "2026-10-10", "dateLabel": "10 Oct", "addon": "1) TuteDude — Generative AI course\n2) CampusX — Linear Regression – Updated 2022 (course, 6 lessons)\n3) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)", "addonFollow": "1) Module 12 — L23 Linear Regression\n2) All 6 lessons — use only for quick revision\n3) Ch 1 Linear regression — 1.1 LMS algorithm · 1.2 Normal equations · 1.3 Probabilistic interpretation"}, {"id": "fab41e1853", "tab": "Theory", "area": "1. Classical ML", "topic": "Linear regression: assumptions, closed form vs GD, MLE view, R²", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Linear regression — all 20 Qs", "source": "Your resources", "date": "2026-10-10", "dateLabel": "10 Oct", "addon": "", "addonFollow": ""}, {"id": "ec72ed2471", "tab": "Theory", "area": "1. Classical ML", "topic": "Logistic regression: sigmoid, CE via MLE, convexity, 'linear', softmax", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#70 Perceptron Trick", "source": "Your resources", "date": "2026-10-10", "dateLabel": "10 Oct", "addon": "1) TuteDude — Generative AI course\n2) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)", "addonFollow": "1) Module 12 — L26 Logistic Regression\n2) Ch 2 Classification & logistic regression · Ch 3 GLMs → softmax regression"}, {"id": "cb6b884601", "tab": "Theory", "area": "1. Classical ML", "topic": "Logistic regression: sigmoid, CE via MLE, convexity, 'linear', softmax", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#71 Perceptron Trick code\n#72 Sigmoid Function\n#73 Loss Function – MLE – Binary Cross Entropy\n#74 Derivative of Sigmoid\n#75 Gradient Descent & code from scratch\n#79 Softmax Regression\n#80 Polynomial Features in LR\n#81 LR Hyperparameters", "source": "Your resources", "date": "2026-10-11", "dateLabel": "11 Oct", "addon": "", "addonFollow": ""}, {"id": "bd13294ebc", "tab": "Theory", "area": "1. Classical ML", "topic": "Logistic regression: sigmoid, CE via MLE, convexity, 'linear', softmax", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Logistic regression — all 30 Qs", "source": "Your resources", "date": "2026-10-11", "dateLabel": "11 Oct", "addon": "", "addonFollow": ""}, {"id": "d6925052bf", "tab": "Theory", "area": "1. Classical ML", "topic": "L1 vs L2: sparsity geometry, ridge as Gaussian prior", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#63 Ridge Part 1", "source": "Your resources", "date": "2026-10-11", "dateLabel": "11 Oct", "addon": "1) CampusX — Regularization (course, 7 lessons)\n2) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)", "addonFollow": "1) All 7 lessons — revision only\n2) Ch 9 Regularization & model selection — 'Bayesian statistics and regularization' (ridge = Gaussian prior / MAP)"}, {"id": "de5e97f1fd", "tab": "Theory", "area": "1. Classical ML", "topic": "L1 vs L2: sparsity geometry, ridge as Gaussian prior", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#64 Ridge Part 2 (maths)\n#65 Ridge Part 3 (GD)\n#66 5 Key Points of Ridge\n#67 Lasso Regression\n#68 Why Lasso creates sparsity\n#69 ElasticNet", "source": "Your resources", "date": "2026-10-12", "dateLabel": "12 Oct", "addon": "", "addonFollow": ""}, {"id": "919a662774", "tab": "Theory", "area": "1. Classical ML", "topic": "L1 vs L2: sparsity geometry, ridge as Gaussian prior", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Regularization — all 19 Qs", "source": "Your resources", "date": "2026-10-12", "dateLabel": "12 Oct", "addon": "", "addonFollow": ""}, {"id": "d7e3374e38", "tab": "Theory", "area": "1. Classical ML", "topic": "Bias–variance tradeoff & fixing overfitting", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#61 Polynomial Regression\n#62 Bias–Variance Trade-off", "source": "Your resources", "date": "2026-10-12", "dateLabel": "12 Oct", "addon": "1) TuteDude — Generative AI course\n2) Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "addonFollow": "1) Module 12 — L25 Overfitting, Underfitting, Variance & Bias\n2) Lecture 8 — M1 Bias and Variance · M2 Train error vs test error"}, {"id": "8204c45663", "tab": "Theory", "area": "1. Classical ML", "topic": "Bias–variance tradeoff & fixing overfitting", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Bias–variance & overfitting — all 13 Qs", "source": "Your resources", "date": "2026-10-12", "dateLabel": "12 Oct", "addon": "", "addonFollow": ""}, {"id": "ee3eeb8f59", "tab": "Theory", "area": "1. Classical ML", "topic": "Trees: Gini / entropy, continuous splits, regression trees", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#97 Decision Trees – Entropy, Gini, Information Gain", "source": "Your resources", "date": "2026-10-12", "dateLabel": "12 Oct", "addon": "1) TuteDude — Generative AI course\n2) StatQuest with Josh Starmer (YouTube) (external)", "addonFollow": "1) Module 12 — L31 Decision Tree Algorithm\n2) 'Decision and Classification Trees, Clearly Explained' · 'Regression Trees, Clearly Explained'"}, {"id": "efcf0beabc", "tab": "Theory", "area": "1. Classical ML", "topic": "Trees: Gini / entropy, continuous splits, regression trees", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#98 DT Hyperparameters & overfitting\n#99 Regression Trees", "source": "Your resources", "date": "2026-10-13", "dateLabel": "13 Oct", "addon": "", "addonFollow": ""}, {"id": "e4d68082a8", "tab": "Theory", "area": "1. Classical ML", "topic": "Ensembles: bagging vs boosting, random forest, GBM/XGBoost intuition", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#101 Intro to Ensemble Learning\n#105 Bagging Part 1\n#108 Intro to Random Forest\n#109 RF Bias–Variance\n#110 Bagging vs Random Forest\n#113 OOB Score\n#114 Feature Importance\n#119 Bagging vs Boosting\n#120 Gradient Boosting Explained\n#122 Gradient Boosting for Classification\n#123 Introduction to XGBoost", "source": "Your resources", "date": "2026-10-13", "dateLabel": "13 Oct", "addon": "1) TuteDude — Generative AI course\n2) StatQuest with Josh Starmer (YouTube) (external)", "addonFollow": "1) Module 12 — L32 Bagging vs Boosting & Random Forest\n2) 'Random Forests Part 1' · 'Gradient Boost Part 1' · 'XGBoost Part 1'"}, {"id": "a0959066cf", "tab": "Theory", "area": "1. Classical ML", "topic": "Ensembles: bagging vs boosting, random forest, GBM/XGBoost intuition", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Decision trees & ensembles — all 26 Qs", "source": "Your resources", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "", "addonFollow": ""}, {"id": "de949d1a54", "tab": "Theory", "area": "1. Classical ML", "topic": "Class imbalance: SMOTE, class weights, choosing a metric", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#133 Imbalanced Data – Undersampling, Oversampling, SMOTE", "source": "Your resources", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "1) imbalanced-learn User Guide (external)", "addonFollow": "1) 'Over-sampling' → SMOTE section (how a synthetic point is made)"}, {"id": "e95b85c649", "tab": "Theory", "area": "1. Classical ML", "topic": "Class imbalance: SMOTE, class weights, choosing a metric", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Imbalanced data — all 11 Qs", "source": "Your resources", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "", "addonFollow": ""}, {"id": "221b1ddc29", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "Confusion matrix, precision/recall/F1, accuracy on imbalance, fraud/cancer/spam", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#76 Accuracy & Confusion Matrix, Type 1/2 errors\n#77 Precision, Recall & F1", "source": "Your resources", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "1) TuteDude — Generative AI course\n2) CodeWithHarry — The Ultimate Job Ready Data Science Course", "addonFollow": "1) Module 12 — L27 Classification Metrics: Accuracy, Precision, Recall\n2) §16 — 'Measuring Accuracy of our Predictions'"}, {"id": "4752a5dd0e", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "ROC-AUC vs PR-AUC, threshold choice, AUC = 0.2", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#78 ROC Curve & ROC-AUC", "source": "Your resources", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "1) StatQuest with Josh Starmer (YouTube) (external)\n2) scikit-learn examples (external)", "addonFollow": "1) 'ROC and AUC, Clearly Explained!'\n2) 'Precision-Recall' example (PR curve, average precision)"}, {"id": "7661132113", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "ROC-AUC vs PR-AUC, threshold choice, AUC = 0.2", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§2 Model evaluation & metrics — all 33 Qs", "source": "Your resources", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "", "addonFollow": ""}, {"id": "c36031f857", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "Regression metrics: MSE, MAE, RMSE, R², adjusted R²", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#52 Regression Metrics – MSE, MAE, RMSE, R² & Adjusted R²", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "1) TuteDude — Generative AI course\n2) CodeWithHarry — The Ultimate Job Ready Data Science Course", "addonFollow": "1) Module 12 — L24 Metrics in Regression\n2) §16 — 'Measuring Errors (RMSE & MAE)'"}, {"id": "cb47fca5fb", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Perceptron → MLP → FNN forward pass & backprop (matrix form), counting params", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 2 — M1–M8 (McCulloch–Pitts, perceptron, learning algorithm, MLPs)\nLecture 3 — M1–M5 (sigmoid neuron, gradient descent, feedforward networks)\nLecture 4 — M1–M10 (feedforward networks, backpropagation)", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "1) TuteDude — Generative AI course\n2) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Module 14 — L3 Perceptron · L4 Multi Layered Perceptron; Module 15 — L5 Backpropagation · L6 Backprop step by step\n2) Videos titled 'Backpropagation Part 1 – The What', 'Part 2 – The How', 'Part 3 – The Why'"}, {"id": "949106992a", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Perceptron → MLP → FNN forward pass & backprop (matrix form), counting params", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§3 Myntra FNN gradient\nRazorpay parameter count\nFidelity/FastCode backprop", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "", "addonFollow": ""}, {"id": "d3f0f83caa", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Activations: sigmoid, tanh, ReLU", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 16 — L7 What is Activation Function\nL8 Types of Activation Function", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "1) Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)\n2) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Lecture 9 — M3 Better activation functions\n2) Videos on 'Activation Functions' and 'ReLU variants'"}, {"id": "0d2c04e8dd", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Losses: MSE, BCE, CE; multi-class vs multi-label", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 15 — L2 What is Loss Function\nL3 Regression Loss & BCE\nL4 Multi-class classification loss", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "1) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Video 'Loss Functions in Deep Learning'"}, {"id": "c063a583e1", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Losses: MSE, BCE, CE; multi-class vs multi-label", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§3 MAIG BCE vs CE & multi-label", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "", "addonFollow": ""}, {"id": "f501be59f0", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Losses: MSE, BCE, CE; multi-class vs multi-label", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "Netradyne 'why entropy'\nOracle/Myntra cross-entropy", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "3d1e30a79c", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "GD → SGD → momentum → Adam", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 5 — M1–M9 (GD, momentum, Nesterov, SGD/mini-batch, AdaGrad, RMSProp, Adam)", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "1) TuteDude — Generative AI course\n2) CampusX — Deep Learning Optimizers (course, 7 lessons)", "addonFollow": "1) Module 15 — L7 Gradient Descent · L8 Types of GD & batch size; Module 16 — L9 Optimizers · L10 Adagrad · L11 RMSProp & Adam\n2) All 7 lessons (EWMA → momentum → NAG → Adagrad → RMSProp → Adam)"}, {"id": "d8fe717bde", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "GD → SGD → momentum → Adam", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§3 Mastercard Adam build-up\nMAIG Adam bias correction\nCerebras GD→Adam", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "2ac66ac8c7", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Vanishing & exploding gradients", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 15 — L9 Vanishing Gradient Problem\nL10 Reason, how to identify & handle", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "1) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Video 'Vanishing Gradient Problem in ANN'"}, {"id": "ddcf877faf", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Vanishing & exploding gradients", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§3 CRED vanishing/exploding\nMAIG 'CNN vs RNN vanishing'", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "0567a51705", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Batch norm vs layer norm", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 9 — M5 Batch Normalization", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "1) TuteDude — Generative AI course\n2) Ba, Kiros & Hinton — 'Layer Normalization' (arXiv 2016) (external)", "addonFollow": "1) Module 16 — L5 Batch Normalization · L6 BatchNorm in depth\n2) Sections 1–3 (why LN, how it differs from BN)"}, {"id": "0559f551bb", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Batch norm vs layer norm", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§3 Qualcomm BN equations\nOLA BN vs LN", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "15ffcf6326", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Dropout at train vs inference", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 8 — Dropout module (last modules of L8)", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "1) TuteDude — Generative AI course\n2) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Module 16 — L3 Dropout Layers\n2) Videos 'Dropout Layer in Deep Learning' (theory + code)"}, {"id": "5fae0e6a26", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Residual connections, early stopping", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 16 — L1 How to Improve Performance\nL2 Early Stopping & Data Scaling\nL4 Regularization in NN", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "1) Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)\n2) CampusX — Improving a Neural Network's Performance (playlist, 4 videos)\n3) He et al. — 'Deep Residual Learning for Image Recognition' (2015) (external)", "addonFollow": "1) Lecture 8 — Early stopping module; Lecture 11 — ResNet module\n2) All 4 videos\n3) §3.1–3.2 + Fig. 2 (residual block)"}, {"id": "76c60caf53", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Residual connections, early stopping", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§3 Oracle/Netradyne/OLA residual connections", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "", "addonFollow": ""}, {"id": "3782cf6e3f", "tab": "Theory", "area": "4. Computer vision", "topic": "Convolution, stride, padding, output size, pooling, CNN vs dense", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 11 — M1 The convolution operation\nM2 Relation between input, output & filter size\nM3 CNNs", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "1) CampusX — Convolutional Neural Networks (CNNs) (course, 7 lessons)\n2) Stanford CS231n notes — Convolutional Neural Networks (external)", "addonFollow": "1) All 7 lessons\n2) 'Convolutional Layer' · 'Pooling Layer' · 'Layer Sizing Patterns'"}, {"id": "18b717bd8d", "tab": "Theory", "area": "4. Computer vision", "topic": "Kernel sizes, 1×1 convolutions, ResNet skip connection", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 11 — M4 LeNet, AlexNet, ZF-Net, VGGNet\nM5 GoogLeNet (1×1 conv) & ResNet", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "1) Stanford CS231n notes — Convolutional Neural Networks (external)", "addonFollow": "1) 'Case studies' section (VGG, GoogLeNet, ResNet)"}, {"id": "d32640a879", "tab": "Theory", "area": "4. Computer vision", "topic": "Kernel sizes, 1×1 convolutions, ResNet skip connection", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§4 Computer vision — InMobi, MAIG output size & 3×3 vs 7×7, Netradyne 1×1, Myntra, Razorpay ResNet", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "", "addonFollow": ""}, {"id": "1824775f84", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "BoW, TF-IDF", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 13 — L15 Text Vectorization Overview\nL16 One-Hot & Bag of Words\nL17 N-grams & TF-IDF", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "1) CampusX — Natural Language Processing (NLP) (course, 8 lessons)", "addonFollow": "1) Lessons on text representation (BoW, n-grams, TF-IDF)"}, {"id": "afa0cc4bec", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Word2Vec vs BERT (static vs contextual)", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 13 — L18 Word2Vec Overview", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "1) Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)\n2) Jay Alammar — 'The Illustrated Word2vec' (blog) (external)\n3) Jay Alammar — 'The Illustrated BERT, ELMo, and co.' (blog) (external)", "addonFollow": "1) Lecture 10 — M1–M6 (one-hot, distributed representations, SVD, CBOW, skip-gram)\n2) Whole post\n3) Whole post (contextual embeddings)"}, {"id": "913ef57b3a", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Word2Vec vs BERT (static vs contextual)", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "L19 Types of Word2Vec\nL20 Training your own Word2Vec", "source": "Your resources", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "", "addonFollow": ""}, {"id": "20a4bd3df3", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Word2Vec vs BERT (static vs contextual)", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§5 Meesho & Wells Fargo Word2Vec\nWells Fargo static-embedding drawbacks", "source": "Your resources", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "", "addonFollow": ""}, {"id": "cb4da2ba07", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "RNN problems → LSTM gates → attention", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 14 — M1–M5 (RNNs, BPTT, vanishing & exploding gradients, truncated BPTT)\nLecture 15 — M1–M3 (GRUs, LSTM cells, solving vanishing gradients)\nLecture 16 — M1–M3 (encoder–decoder models, attention mechanism)", "source": "Your resources", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "1) TuteDude — Generative AI course\n2) Christopher Olah — 'Understanding LSTM Networks' (colah's blog) (external)", "addonFollow": "1) Module 19 — L1 Why RNNs · L3 What is RNN · L4 Forward Propagation · L7–8 BPTT · L9–10 Problems with RNN; Module 21 — L1 From RNN to LSTM · L2 Memory types · L3 Gates in LSTM\n2) Whole post"}, {"id": "b3ec7d4b57", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "RNN problems → LSTM gates → attention", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§5 OLA/MAIG RNN problems\nQualcomm & Lam LSTM gates\nMyntra RNN backprop", "source": "Your resources", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "", "addonFollow": ""}, {"id": "a92020960a", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Attention (Q, K, V, scaling, dims) & full transformer", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 24 — L4 Positional Encoding & Self-Attention\nL5 Multi-Head Attention & Encoder\nL6 Decoder", "source": "Your resources", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "1) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)\n2) Jay Alammar — 'The Illustrated Transformer' (blog) (external)\n3) 3Blue1Brown — Neural Networks series (YouTube) (external)\n4) Vaswani et al. — 'Attention Is All You Need' (2017) (external)", "addonFollow": "1) Transformer section: Self-Attention · Scaled Dot-Product · Multi-Head Attention · Positional Encoding · Layer Normalization · Encoder · Masked Self-Attention · Cross-Attention · Decoder\n2) Whole post\n3) Ch 5 'Transformers (how LLMs work)' · Ch 6 'Attention in transformers'\n4) §3 Model Architecture + Fig. 1 (walk through it aloud — OLA asked this)"}, {"id": "4ad4401fbd", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Attention (Q, K, V, scaling, dims) & full transformer", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "L9 Attention Mechanism", "source": "Your resources", "date": "2026-10-19", "dateLabel": "19 Oct", "addon": "", "addonFollow": ""}, {"id": "4f876043e1", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Attention (Q, K, V, scaling, dims) & full transformer", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§5 Attention/transformer Qs — CRED, Myntra, OLA, Qualcomm, FastCode, Citi", "source": "Your resources", "date": "2026-10-19", "dateLabel": "19 Oct", "addon": "", "addonFollow": ""}, {"id": "e2ffbb1837", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "RAG pipeline: chunking, embeddings, vector DB, retrieval, reranker, prompt", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 28 — L5–L13 Document Loaders & Text Splitters (length / structure / semantic)\nModule 28 — L14–L17 Embedding Models (OpenAI, HuggingFace, Ollama)\nL18–L21 Vector Stores, ChromaDB, FAISS\nModule 29 — L1 Retrievers\nL2 Wikipedia & Vector Store Retriever\nL3 MMR\nL4 Multi-Query & Contextual Compression\nL5 What is RAG\nL6 YouTube RAG chatbot", "source": "Your resources", "date": "2026-10-19", "dateLabel": "19 Oct", "addon": "1) CampusX — RAG Playlist (10 videos)\n2) CodeWithHarry — The Ultimate Job Ready Data Science Course\n3) Pinecone Learn — 'Rerankers and Two-Stage Retrieval' (external)", "addonFollow": "1) All 10 videos\n2) §19 Large Language Models — L4 Retrieval Augmented Generation (RAG)\n3) Whole article"}, {"id": "0863b70408", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "RAG pipeline: chunking, embeddings, vector DB, retrieval, reranker, prompt", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§6 RAG — all 18 Qs (Oracle, Citi, Observe.AI, Walmart)", "source": "Your resources", "date": "2026-10-19", "dateLabel": "19 Oct", "addon": "", "addonFollow": ""}, {"id": "efd6265715", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "Hallucination causes & mitigation; RAG vs fine-tuning", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 29 — L5 What is RAG (Shifting from Fine-Tuning to RAG)", "source": "Your resources", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "1) Lilian Weng — 'Extrinsic Hallucinations in LLMs' (blog) (external)", "addonFollow": "1) Causes + 'Anti-hallucination methods' sections"}, {"id": "87cddb8b9c", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "Hallucination causes & mitigation; RAG vs fine-tuning", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§6 Walmart/Citi hallucination\nOracle & Lam RAG vs fine-tuning", "source": "Your resources", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "", "addonFollow": ""}, {"id": "1037e72d5e", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "LoRA / QLoRA & quantization basics", "priority": "Must", "resource": "Hugging Face PEFT docs", "follow": "Conceptual guide 'LoRA'", "source": "External (gap-filler)", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "1) Hugging Face blog — 'Making LLMs even more accessible with bitsandbytes, 4-bit quantization and QLoRA' (external)\n2) Sebastian Raschka — 'Practical Tips for Finetuning LLMs Using LoRA' (blog) (external)", "addonFollow": "1) Whole post\n2) Whole post (rank r, alpha, which layers)"}, {"id": "aa8f63c0fb", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "LoRA / QLoRA & quantization basics", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§6 Lam LoRA–SVD link\nQualcomm QLoRA pipeline\nFujitsu quantization", "source": "Your resources", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "", "addonFollow": ""}, {"id": "39c3c0cf69", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Conditional probability, Bayes (two-coin problems), expectation", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§12 Probability — all 7 lectures: Intro\nTypes of Experiments\nPractice Set 1\nBasic Rules\nPractice Qs\nConditional Probability\nBayes' Theorem", "source": "Your resources", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "1) CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)\n2) CampusX — Probability Basics (ML Roadmap 2022) (playlist, 10 videos)\n3) Blitzstein & Hwang — Introduction to Probability (free PDF, Harvard Stat 110) (external)", "addonFollow": "1) #82 NB Part 1 Conditional Probability · #83 Independent Events · #84 Mutually Exclusive Events · #85 Bayes Theorem · #86 Problem on Bayes Theorem\n2) All 10 videos (random variables, expectation included)\n3) Ch 2 Conditional probability · Ch 9.1–9.3 Conditional expectation (expected tosses to HH)"}, {"id": "b29dbda576", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Conditional probability, Bayes (two-coin problems), expectation", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§7 Probability problems — Netradyne two-coin ×3, Mastercard/Myntra Bayes, MAIG dice, expected tosses", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "", "addonFollow": ""}, {"id": "3f629bf1ea", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Distributions (Bernoulli → exponential) & CLT", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§13 Probability Distributions & CLT — all 5 lectures: Intro\nUniform\nBinomial\nNormal\nCentral Limit Theorem", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "1) CampusX — Statistics for Machine Learning (course, 13 lessons)\n2) StatQuest with Josh Starmer (YouTube) (external)\n3) Blitzstein & Hwang — Introduction to Probability (external)", "addonFollow": "1) Lessons on distributions, sampling distribution and CLT\n2) 'The Main Ideas behind Probability Distributions' · 'The Central Limit Theorem, Clearly Explained'\n3) Ch 4.3 Poisson · Ch 5.5–5.6 Exponential & memorylessness"}, {"id": "a6bbb5e6d3", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Distributions (Bernoulli → exponential) & CLT", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§7 Distributions — Meesho exponential + CLT, Citi CLT, Goldman min of exponentials", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "", "addonFollow": ""}, {"id": "574d0fc99b", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Simulation: sampling from a PMF, fair coin from biased coin", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§7 Netradyne cointoss → [a,b] and 4/5/9 generator\nInMobi fair coin from biased\nIntuit PMF/simulate π (theory here, code in Coding tab)", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "", "addonFollow": ""}, {"id": "0c865e6423", "tab": "Theory", "area": "7. Probability & statistics", "topic": "MLE derivations; MAP & link to regularization", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#73 Logistic Regression Part 4 — Loss Function, Maximum Likelihood, BCE", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "1) StatQuest with Josh Starmer (YouTube) (external)\n2) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)", "addonFollow": "1) 'Maximum Likelihood, clearly explained!!!' · 'Maximum Likelihood for the Normal Distribution'\n2) Ch 9 — 'Bayesian statistics and regularization' (MAP)"}, {"id": "0a6945ba1a", "tab": "Theory", "area": "7. Probability & statistics", "topic": "MLE derivations; MAP & link to regularization", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§7 Rapido MLE pseudocode\nWells Fargo likelihood", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "", "addonFollow": ""}, {"id": "da199e806e", "tab": "Theory", "area": "7. Probability & statistics", "topic": "MLE derivations; MAP & link to regularization", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "Goldman likelihood\nCRED MAP/MLE", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "2c083d80bb", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Hypothesis testing: p-values, type I/II, t vs z, one vs two-tailed", "priority": "Must", "resource": "CampusX — Advance Statistics (ML Roadmap 2022) (playlist, 7 videos)", "follow": "All 7 videos", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "1) Penn State STAT 500 — Applied Statistics (online notes) (external)\n2) StatQuest with Josh Starmer (YouTube) (external)", "addonFollow": "1) Lesson 6a & 6b Hypothesis testing · Lesson 7 Comparing two population parameters (t-tests)\n2) 'p-values: What they are and how to interpret them'"}, {"id": "f20143f066", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Hypothesis testing: p-values, type I/II, t vs z, one vs two-tailed", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§7 Hypothesis testing — Meesho salary t-test, Airtel p-value layperson, Razorpay", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "baa6f03377", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Confidence intervals & A/B test design", "priority": "Must", "resource": "Penn State STAT 500 — Applied Statistics", "follow": "Lesson 5 Confidence intervals", "source": "External (gap-filler)", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "1) Udacity — A/B Testing by Google (free course) (external)", "addonFollow": "1) Lesson 1 Overview · Lesson 2 Policy & ethics skim · Lesson 3 Choosing metrics · Lesson 4 Designing an experiment"}, {"id": "d4cd17a6bd", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Confidence intervals & A/B test design", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§7 MAIG CI\n§11 Rapido A/B split & test choice", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "d7c3bebfbb", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Convexity & Hessian test", "priority": "Must", "resource": "CampusX — Maths for Machine Learning (playlist, 23 videos)", "follow": "Only the convexity / Hessian / optimization videos", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "1) Stanford CS229 — 'Convex Optimization Overview' (Zico Kolter, free PDF) (external)", "addonFollow": "1) §2 Convex sets · §3 Convex functions (second-order / Hessian condition)"}, {"id": "ec05f0d991", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Convexity & Hessian test", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§8 Intuit & Meesho convexity Qs", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "a3997ffabd", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Deriving GD update; why iterate vs closed form", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 3 — gradient-descent module (Taylor-series derivation of the update)", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "1) CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "addonFollow": "1) #57 Gradient Descent From Scratch"}, {"id": "5cd712a634", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Deriving GD update; why iterate vs closed form", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§1 Mastercard 'MSE is convex, why not closed form?'\nIntuit 'why not set gradient to zero'", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "d82b050d26", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Eigenvalues, SVD and link to PCA", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 6 — M1–M8 (eigenvalues, eigen-decomposition, basis, PCA, SVD)", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "1) CampusX — Linear Algebra for Machine Learning (playlist, 8 videos)\n2) 3Blue1Brown — Essence of Linear Algebra (YouTube) (external)", "addonFollow": "1) Eigen & SVD videos\n2) Ch 14 Eigenvectors and eigenvalues"}, {"id": "59520b725c", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Eigenvalues, SVD and link to PCA", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§8 Mastercard SVD & Eckart–Young\nFastCode SVD image compression", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "b5ebc37681", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Matrix calculus for backprop", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 4 — backprop modules (matrix-form gradients)", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "1) Petersen & Pedersen — The Matrix Cookbook (free PDF) (external)\n2) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)", "addonFollow": "1) §2 Derivatives — formula reference\n2) 'Linear Algebra Review and Reference' §4 Matrix calculus"}, {"id": "945300544e", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Framework: goal → metric → data → baseline → eval → deploy & monitor", "priority": "Must", "resource": "CampusX — Machine Learning Case Study (playlist, 2 videos)", "follow": "Both videos", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "1) CampusX — Data Science Interview Preparation (playlist, 2 videos)\n2) CampusX — Machine Learning Interview Questions (playlist, 22 videos)", "addonFollow": "1) Both videos\n2) Selective — videos on case / scenario questions"}, {"id": "57162553b9", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Practice: fraud detection", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§11 Mastercard fraud case ×3\nZS Associates fraud pipeline ×3\nNetradyne real-time issues\nSkellam AI", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "c875f9cc63", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Practice: churn prediction", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§11 Airtel churn (data sources, algorithms, metrics)\nCapital One unsubscribe reasons", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "f8e907c4fd", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Practice: demand forecasting", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§11 Intuit Flipkart next-day customers\nRapido customer acquisition next quarter", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "5b0f675d75", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Practice: metric drop & A/B design", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§11 Rapido Zomato −15% (×2)\nRapido price-sensitive segments + A/B validation", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "a06b4e6505", "tab": "Theory", "area": "1. Classical ML", "topic": "SVM: margins, hinge loss, dual, kernel trick", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#92 SVM Geometric Intuition\n#93 Hard Margin SVM maths\n#94 Soft Margin SVM\n#95 Kernel Trick intuition\n#96 Kernel Trick code", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) CampusX — Support Vector Machines (SVM) (course, 7 lessons)\n2) TuteDude — Generative AI course\n3) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)\n4) Interview Question Bank (your project file)", "addonFollow": "1) Alternative to #92–96 — use only if you want more depth\n2) Module 12 — L30 Support Vector Machine\n3) Ch 6 Support vector machines — margins, Lagrange duality, kernels\n4) §1 SVM & kernels — all 8 Qs"}, {"id": "6a6684a3c0", "tab": "Theory", "area": "1. Classical ML", "topic": "KNN & Naive Bayes", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#91 K Nearest Neighbors\n#87 Naive Bayes Intuition\n#88 Maths behind NB\n#89 Simple Example Code\n#90 Handling Numerical Data", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) TuteDude — Generative AI course\n2) Interview Question Bank (your project file)", "addonFollow": "1) Module 12 — L28 Naive Bayes · L29 K Nearest Neighbors\n2) §1 KNN, Naive Bayes, GDA, clustering — all 13 Qs"}, {"id": "53bf64da81", "tab": "Theory", "area": "1. Classical ML", "topic": "K-means & choosing k", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#128 K-Means Geometric Intuition\n#129 K-Means in Python\n#130 K-Means from scratch", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) TuteDude — Generative AI course\n2) scikit-learn examples (external)", "addonFollow": "1) Module 12 — L36 Unsupervised ML · L37 K Means Clustering\n2) 'Selecting the number of clusters with silhouette analysis on KMeans clustering'"}, {"id": "f354a9feb6", "tab": "Theory", "area": "1. Classical ML", "topic": "PCA: derivation, limitations, PCA vs autoencoder", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#46 Curse of Dimensionality", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Lecture 6 — M5–M8 (PCA interpretations, SVD) · Lecture 7 — M2 Link between PCA and autoencoders\n2) §1 Dimensionality reduction — all 5 Qs"}, {"id": "d6884ceaa8", "tab": "Theory", "area": "1. Classical ML", "topic": "PCA: derivation, limitations, PCA vs autoencoder", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#47 PCA Geometric Intuition\n#48 PCA Problem Formulation\n#49 PCA Code & Visualization", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "", "addonFollow": ""}, {"id": "2b8d5774ab", "tab": "Theory", "area": "1. Classical ML", "topic": "GMM / EM basics", "priority": "Important", "resource": "Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF)", "follow": "'Mixtures of Gaussians and the EM algorithm' notes", "source": "External (gap-filler)", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "1) scikit-learn User Guide (external)", "addonFollow": "1) 2.1 Gaussian mixture models"}, {"id": "a7bf7d8c8d", "tab": "Theory", "area": "1. Classical ML", "topic": "Recommenders: collaborative filtering, matrix factorization, cold start", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 13 — L6 Recommendation System Overview\nL7 Getting Started\nL8 Preprocessing\nL9 Vectorization & Building\nL10 Launching as Website", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "1) Google for Developers — Recommendation Systems course (free) (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Candidate Generation: content-based filtering · collaborative filtering · matrix factorization\n2) §1 Recommendation systems — all 7 Qs"}, {"id": "bedee714ed", "tab": "Theory", "area": "1. Classical ML", "topic": "Hyperparameter tuning & AdaBoost", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#111 RF Hyperparameters\n#112 GridSearchCV & RandomizedSearchCV\n#134 Optuna (Bayesian optimization)\n#115 AdaBoost Geometric Intuition", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "", "addonFollow": ""}, {"id": "7cb4a6fe4c", "tab": "Theory", "area": "1. Classical ML", "topic": "Hyperparameter tuning & AdaBoost", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#116 AdaBoost Step by Step\n#117 AdaBoost code\n#118 AdaBoost Hyperparameters", "source": "Your resources", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "", "addonFollow": ""}, {"id": "6939ea1d21", "tab": "Theory", "area": "1. Classical ML", "topic": "Time series: trend, seasonality, lag features, time split, ARIMA intuition", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#34 Handling Date and Time Variables", "source": "Your resources", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "1) Hyndman & Athanasopoulos — Forecasting: Principles and Practice, 3rd ed. (free online) (external)\n2) scikit-learn API docs (external)\n3) Interview Question Bank (your project file)", "addonFollow": "1) Ch 2 Time series graphics (trend, seasonality) · Ch 7.4 Useful predictors (lags, dummies) · Ch 9.1–9.5 ARIMA (intuition only)\n2) TimeSeriesSplit (time-based train/test split)\n3) §11 Intuit forecasting Qs — lag variables, seasonality, call-centre calls per day"}, {"id": "2287f7f42e", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "Macro vs weighted F1, log-loss, calibration", "priority": "Important", "resource": "scikit-learn User Guide", "follow": "3.4 Metrics — 'From binary to multiclass and multilabel'\n'Log loss'\n1.16 Probability calibration", "source": "External (gap-filler)", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "", "addonFollow": ""}, {"id": "453987b0cb", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "BLEU / ROUGE (only if NLP is on resume)", "priority": "Important", "resource": "Hugging Face — NLP Course", "follow": "Ch 7 'Translation' (BLEU / sacreBLEU section)\n'Summarization' (ROUGE section)", "source": "External (gap-filler)", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "", "addonFollow": ""}, {"id": "6f467ab030", "tab": "Theory", "area": "2. Model evaluation & metrics", "topic": "Forecasting metrics: MAPE, SMAPE", "priority": "Important", "resource": "Hyndman & Athanasopoulos — Forecasting: Principles and Practice, 3rd ed.", "follow": "Ch 5.8 Evaluating point forecast accuracy (MAPE, sMAPE)", "source": "External (gap-filler)", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "", "addonFollow": ""}, {"id": "3b14642221", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Xavier / He initialization; learning-rate schedules", "priority": "Important", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 9 — M4 Better weight initialization", "source": "Your resources", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "1) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)\n2) Stanford CS231n notes — Neural Networks Part 3 (external)", "addonFollow": "1) Videos on 'Weight Initialization Techniques' (Xavier / He)\n2) 'Annealing the learning rate' section"}, {"id": "dce7744f0a", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "KL divergence; generative vs discriminative", "priority": "Important", "resource": "Goodfellow, Bengio & Courville — Deep Learning book (free online)", "follow": "§3.13 Information Theory (entropy, cross-entropy, KL)", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF) (external)", "addonFollow": "1) Ch 4 Generative learning algorithms — intro (generative vs discriminative)"}, {"id": "3dcd8e044b", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Autoencoder vs VAE", "priority": "Important", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 7 — M1–M6 (autoencoders, regularization, denoising, sparse, contractive)\nLecture 21 slides — Variational autoencoders", "source": "Your resources", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) Lilian Weng — 'From Autoencoder to Beta-VAE' (blog) (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Sections: Autoencoder · VAE · Loss function (ELBO)\n2) §3 MAIG AE vs VAE · OLA VAE for fraud"}, {"id": "9b576a2317", "tab": "Theory", "area": "3. Deep learning fundamentals", "topic": "Why neural nets are non-convex", "priority": "Important", "resource": "Goodfellow, Bengio & Courville — Deep Learning book", "follow": "§8.2 Challenges in neural network optimization (local minima, saddle points)", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) Interview Question Bank (your project file)", "addonFollow": "1) §3 InMobi convex vs non-convex"}, {"id": "5c3abe63b1", "tab": "Theory", "area": "4. Computer vision", "topic": "Transfer learning & augmentation", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 18 — L1 Pre Trained Models\nL2 Pre Training for GenAI\nL3 Transfer Learning\nL4 Transfer Learning in Industry", "source": "Your resources", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Videos 'Data Augmentation in CNN', 'Pretrained models', 'Transfer Learning'"}, {"id": "5b16568b52", "tab": "Theory", "area": "4. Computer vision", "topic": "U-Net & segmentation losses (Dice, IoU, BCE, focal)", "priority": "Important", "resource": "Ronneberger et al. — 'U-Net' paper (2015)", "follow": "Fig. 1 + §2 Network architecture", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) Jeremy Jordan — 'An overview of semantic image segmentation' (blog) (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) U-Net section + 'Defining a loss function' (soft Dice)\n2) §4 Netradyne Dice+BCE · MAIG Dice vs IoU · Mastercard/Qualcomm U-Net"}, {"id": "a77ec12f9a", "tab": "Theory", "area": "4. Computer vision", "topic": "ViT: patches, CLS token", "priority": "Important", "resource": "Dosovitskiy et al. — 'An Image is Worth 16x16 Words' (ViT paper)", "follow": "Fig. 1 + §3.1 Vision Transformer", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) Interview Question Bank (your project file)", "addonFollow": "1) §4 OLA, Meesho, Fujitsu ViT Qs"}, {"id": "7503f14045", "tab": "Theory", "area": "4. Computer vision", "topic": "GAN basics", "priority": "Important", "resource": "CampusX — Generative Adversarial Networks (GANs) (playlist, 1 video)", "follow": "The single video", "source": "Your resources", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "addonFollow": "1) Lecture 23 slides — GANs"}, {"id": "07a42faad4", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "BERT vs GPT", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 24 — L11 Transfer Learning with Transformers\nL12 Language Modelling Task\nL13 LLMs from OpenAI & Google\nL14 ChatGPT from LLMs", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) Jay Alammar — 'The Illustrated GPT-2' (blog) (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Parts 1–2\n2) §5 Airtel BERT NSP & MLM · Fujitsu 'why GPT is autoregressive'"}, {"id": "0cd53465b0", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "BPE tokenization", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 24 — L2 TikTokenizer & Tokenization in Transformers", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) Hugging Face — NLP Course (external)", "addonFollow": "1) Ch 6 'Byte-Pair Encoding tokenization'"}, {"id": "7bfe144ed6", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Seq2seq with Bahdanau attention; GRU", "priority": "Important", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 16 — M1–M5 (encoder–decoder, attention, attention over images)", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 24 — L8 Encoder–Decoder for Seq2Seq · L9 Attention Mechanism; Module 21 — L4 GRU Introduction · L5 Working of GRU"}, {"id": "a9b3ea814a", "tab": "Theory", "area": "5. NLP & sequence models", "topic": "Sinusoidal positional encoding; RoPE by name", "priority": "Important", "resource": "CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "follow": "Video 'Positional Encoding in Transformers'", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) EleutherAI blog — 'Rotary Embeddings: A Relative Revolution' (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Intuition section only\n2) §5 MAIG sinusoidal PE · Cerebras RoPE"}, {"id": "350fcb2d74", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "RAG evaluation", "priority": "Important", "resource": "CampusX — LLM Evaluation (playlist, 19 videos)", "follow": "Only the RAG-evaluation videos", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) Ragas documentation (external)", "addonFollow": "1) Metrics: faithfulness · answer relevancy · context precision · context recall"}, {"id": "108e931f0c", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "Agents vs tools; LangChain basics", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 28 — L1–L4 LangChain components (models, prompts, chains, memory, agents)\nModule 35 — L1 Tools & built-in tools\nL2 Custom tools\nL3 Tool binding\nL4 Tool calling\nL5 What is an AI agent", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) CampusX — Generative AI using LangChain (course, 21 lessons)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Selective: intro, components, chains, agents\n2) §6 Agents & GenAI landscape — Tecnod8 agents vs tools, Citi agent problems"}, {"id": "42daf1a692", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "Agents vs tools; LangChain basics", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "L6 Creating an agent\nL7 ReAct agent", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "", "addonFollow": ""}, {"id": "bf2da6624f", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "KV cache; temperature, top-k, top-p", "priority": "Important", "resource": "Hugging Face blog — 'KV Caching Explained: Optimizing Transformer Inference Efficiency'", "follow": "Whole post", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) Hugging Face blog — 'How to generate text: using different decoding methods' (external)", "addonFollow": "1) Greedy · beam · sampling · temperature · top-k · top-p"}, {"id": "52ac6f768b", "tab": "Theory", "area": "6. GenAI, LLMs & RAG", "topic": "RLHF at a high level; catastrophic forgetting", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 25 — L3 ChatGPT Training Initial Steps\nL4 ChatGPT Training Final RLHF Step", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) Hugging Face blog — 'Illustrating Reinforcement Learning from Human Feedback (RLHF)' (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Whole post\n2) §6 Walmart RLHF & fine-tuning failure modes · Lam catastrophic forgetting"}, {"id": "788d13bbd3", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Sums of RVs, birthday problem, recursive puzzles", "priority": "Important", "resource": "Blitzstein & Hwang — Introduction to Probability", "follow": "Ch 8.2 Convolutions (X+Y)\nExample: birthday problem (Ch 1.6)", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) Brainstellar — probability puzzles (website) (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Easy + medium puzzles (recursion / first-step analysis)\n2) §7 Intuit birthday 400/366 · Netradyne amoeba & PDF of X+Y · Wells Fargo U+U & dice game · Goldman A vs B dice game"}, {"id": "366422b5d7", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Chi-square & ANOVA", "priority": "Important", "resource": "CampusX — Statistics for Machine Learning (course)", "follow": "Chi-square & ANOVA lessons", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) Penn State STAT 500 — Applied Statistics (external)", "addonFollow": "1) Lesson 8 Chi-square test for independence · Lesson 10 One-way ANOVA"}, {"id": "e734e9dfbc", "tab": "Theory", "area": "7. Probability & statistics", "topic": "Inverse-CDF sampling, unbiased estimators, correlation vs causation", "priority": "Important", "resource": "Blitzstein & Hwang — Introduction to Probability", "follow": "Ch 5.3 Universality of the Uniform (inverse-CDF sampling)", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) StatQuest with Josh Starmer (YouTube) (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) 'Why Dividing By N Underestimates the Variance' (unbiased estimator)\n2) §7 Goldman sampling from CDF & unbiased estimators · Netradyne regression vs correlation"}, {"id": "1c50cc5943", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "SPD matrices, rank & null space", "priority": "Important", "resource": "CampusX — Linear Algebra for Machine Learning (playlist)", "follow": "Rank / null space / positive-definite videos", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) 3Blue1Brown — Essence of Linear Algebra (external)\n2) Interview Question Bank (your project file)", "addonFollow": "1) Ch 7 Inverse matrices, column space and null space\n2) §8 Intuit SPD (eigenvalues of A⁻¹) · Wells Fargo diagonalization f(A)"}, {"id": "6d3aa02b32", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Least squares & normal equations", "priority": "Important", "resource": "Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF)", "follow": "Ch 1.2 The normal equations", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) MIT 18.06 Linear Algebra — Gilbert Strang (OCW) (external)", "addonFollow": "1) Lecture 15 Projections onto subspaces · Lecture 16 Projection matrices & least squares"}, {"id": "a0724ee66e", "tab": "Theory", "area": "8. Linear algebra, calculus & optimization", "topic": "Lagrange multipliers (SVM dual); Newton's method idea", "priority": "Important", "resource": "Stanford CS229 Lecture Notes — Andrew Ng (cs229.stanford.edu, free PDF)", "follow": "Ch 6 SVM — Lagrange duality section\nCh 2 — Newton's method (in logistic regression chapter)", "source": "External (gap-filler)", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "1) Khan Academy — Multivariable calculus (external)", "addonFollow": "1) 'Lagrange multipliers, introduction' (+ example)"}, {"id": "58ae3534e0", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Guesstimates, profit / runway arithmetic", "priority": "Important", "resource": "Taylor Warfield — Hacking the Case Interview (book)", "follow": "Market sizing chapter\nProfitability framework chapter", "source": "External (gap-filler)", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "1) Interview Question Bank (your project file)", "addonFollow": "1) §11 Capital One TV channel, harvester, gaming, ad-position cases · Citi PepsiCo plant"}, {"id": "2187f66484", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Recommender design; LLM/RAG product design", "priority": "Important", "resource": "Interview Question Bank (your project file)", "follow": "§11 Flipkart hotel performance\nWalmart LLM categorisation\nIntuit tax LLM tool\nInMobi agentic party app\nWalmart GenAI vs prediction", "source": "Your resources", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "", "addonFollow": ""}, {"id": "76c3327584", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Latency, drift & retraining", "priority": "Important", "resource": "Chip Huyen — Designing Machine Learning Systems (O'Reilly)", "follow": "Ch 8 Data Distribution Shifts and Monitoring", "source": "External (gap-filler)", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "", "addonFollow": ""}, {"id": "e80751c6a3", "tab": "Theory", "area": "11. Case studies & ML system design", "topic": "Forecasting case drill (call volume / customer count)", "priority": "Important", "resource": "Hyndman & Athanasopoulos — Forecasting: Principles and Practice", "follow": "Ch 7.4 Useful predictors (holiday & seasonal dummies)", "source": "External (gap-filler)", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "1) Interview Question Bank (your project file)", "addonFollow": "1) §11 Intuit call-centre calls per day (2019–2024) + lag order selection"}, {"id": "072bdd1daf", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Thinking aloud: clarify → brute force → optimise → dry-run", "priority": "Must", "resource": "Method (no video)", "follow": "For every LeetCode problem: say the input/edge cases, brute force + complexity, optimise, dry-run one example out loud", "source": "External (gap-filler)", "date": null, "dateLabel": "Every day", "addon": "", "addonFollow": ""}, {"id": "a6aba6d1cb", "tab": "Coding", "area": "9. DSA & coding — Python & complexity", "topic": "Python fluency", "priority": "Must", "resource": "CodeWithHarry — Python Tutorial for Beginners (11-hr one-shot, YouTube)", "follow": "Ch 0–5 (00:00:00–00:37:48): programming, modules & pip, variables & datatypes, strings, lists & tuples, dictionaries & sets (part 1/5)\nCh 0–5 (00:37:48–01:15:36): programming, modules & pip, variables & datatypes, strings, lists & tuples, dictionaries & sets (part 2/5)\nCh 0–5 (01:15:36–01:53:24): programming, modules & pip, variables & datatypes, strings, lists & tuples, dictionaries & sets (part 3/5)\nCh 0–5 (01:53:24–02:31:12): programming, modules & pip, variables & datatypes, strings, lists & tuples, dictionaries & sets (part 4/5)\nCh 0–5 (02:31:12–03:09:00): programming, modules & pip, variables & datatypes, strings, lists & tuples, dictionaries & sets (part 5/5)\nCh 6–9 (03:09:00–03:51:36): conditionals, loops, functions & recursion, file I/O (part 1/5)", "source": "Your resources", "date": "2026-10-09", "dateLabel": "09 Oct", "addon": "1) CodeWithHarry — The Ultimate Job Ready Data Science Course", "addonFollow": "1) §3 Python Refresher — 'List comprehensions', 'Lambda functions', 'JSON module' (quick recap)"}, {"id": "1e54337b74", "tab": "Coding", "area": "9. DSA & coding — Python & complexity", "topic": "Python fluency", "priority": "Must", "resource": "CodeWithHarry — Python Tutorial for Beginners (11-hr one-shot, YouTube)", "follow": "Ch 6–9 (03:51:36–04:34:12): conditionals, loops, functions & recursion, file I/O (part 2/5)\nCh 6–9 (04:34:12–05:16:48): conditionals, loops, functions & recursion, file I/O (part 3/5)\nCh 6–9 (05:16:48–05:59:24): conditionals, loops, functions & recursion, file I/O (part 4/5)\nCh 6–9 (05:59:24–06:42:00): conditionals, loops, functions & recursion, file I/O (part 5/5)\nCh 12–13 (08:15:00–08:52:30): advanced Python 1 & 2 (comprehensions, lambda/map/filter, f-strings, etc.) (part 1/2)", "source": "Your resources", "date": "2026-10-10", "dateLabel": "10 Oct", "addon": "", "addonFollow": ""}, {"id": "f2beb1ef62", "tab": "Coding", "area": "9. DSA & coding — Python & complexity", "topic": "Python fluency", "priority": "Must", "resource": "CodeWithHarry — Python Tutorial for Beginners (11-hr one-shot, YouTube)", "follow": "Ch 12–13 (08:52:30–09:30:00): advanced Python 1 & 2 (comprehensions, lambda/map/filter, f-strings, etc.) (part 2/2)", "source": "Your resources", "date": "2026-10-11", "dateLabel": "11 Oct", "addon": "", "addonFollow": ""}, {"id": "a466ee2e3c", "tab": "Coding", "area": "9. DSA & coding — Python & complexity", "topic": "Complexity analysis", "priority": "Must", "resource": "DSA with Python — one-shot video (your project file, timestamps)", "follow": "00:04:39–00:48:34 — Algorithmic complexity (part 1/2)\n00:48:34–01:32:29 — Algorithmic complexity (part 2/2)\norder of growth\ncomplexity classes\ntime-complexity practice Qs", "source": "Your resources", "date": "2026-10-11", "dateLabel": "11 Oct", "addon": "", "addonFollow": ""}, {"id": "f113529884", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Arrays & hashing", "priority": "Must", "resource": "DSA with Python — one-shot video (your project file, timestamps)", "follow": "01:32:29–02:11:10 Arrays, referential & dynamic arrays (build your own list) (part 1/2)\n02:11:10–02:49:52 Arrays, referential & dynamic arrays (build your own list) (part 2/2)\n06:46:14–07:25:42 Hashing (collisions, linear probing, chaining) (part 1/4)\n07:25:42–08:05:09 Hashing (collisions, linear probing, chaining) (part 2/4)\n08:05:09–08:44:36 Hashing (collisions, linear probing, chaining) (part 3/4)\n08:44:36–09:24:04 Hashing (collisions, linear probing, chaining) (part 4/4)", "source": "Your resources", "date": "2026-10-12", "dateLabel": "12 Oct", "addon": "", "addonFollow": ""}, {"id": "948e8318da", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Arrays & hashing", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Two Sum (1)\nContains Duplicate (217)\nValid Anagram (242)\nGroup Anagrams (49)\nTop K Frequent Elements (347)\nProduct of Array Except Self (238)", "source": "External (gap-filler)", "date": "2026-10-13", "dateLabel": "13 Oct", "addon": "", "addonFollow": ""}, {"id": "8870cb1133", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Two pointers", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Valid Palindrome (125)\nTwo Sum II (167)\n3Sum (15)", "source": "External (gap-filler)", "date": "2026-10-13", "dateLabel": "13 Oct", "addon": "", "addonFollow": ""}, {"id": "61d7ef9138", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Two pointers", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Container With Most Water (11)\nSort Colors (75)", "source": "External (gap-filler)", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "", "addonFollow": ""}, {"id": "c8f339bd22", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Sliding window & prefix sums", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Best Time to Buy & Sell Stock (121)\nLongest Substring Without Repeating Characters (3)\nLongest Repeating Character Replacement (424)\nPermutation in String (567)\nMaximum Subarray / Kadane (53)", "source": "External (gap-filler)", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "", "addonFollow": ""}, {"id": "6fcd0e54d0", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Sliding window & prefix sums", "priority": "Must", "resource": "LeetCode", "follow": "Range Sum Query – Immutable (303)", "source": "External (gap-filler)", "date": "2026-10-14", "dateLabel": "14 Oct", "addon": "", "addonFollow": ""}, {"id": "d4f56d17ab", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Sliding window & prefix sums", "priority": "Must", "resource": "LeetCode", "follow": "Subarray Sum Equals K (560)", "source": "External (gap-filler)", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "", "addonFollow": ""}, {"id": "f2418f478f", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Sorting & binary search (incl. rotated array)", "priority": "Must", "resource": "DSA with Python — one-shot video (your project file, timestamps)", "follow": "09:24:04–end — Linear search\nBinary search\nBubble\nSelection\nMerge sort", "source": "Your resources", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "", "addonFollow": ""}, {"id": "011ef11655", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Sorting & binary search (incl. rotated array)", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Binary Search (704)", "source": "External (gap-filler)", "date": "2026-10-15", "dateLabel": "15 Oct", "addon": "", "addonFollow": ""}, {"id": "74dbaf1255", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Sorting & binary search (incl. rotated array)", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Search in Rotated Sorted Array (33)\nFind Minimum in Rotated Sorted Array (153)\nSearch a 2D Matrix (74)\nKoko Eating Bananas (875)", "source": "External (gap-filler)", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "d629893922", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Stacks & queues", "priority": "Must", "resource": "DSA with Python — one-shot video (your project file, timestamps)", "follow": "05:06:27–05:56:20 — Stack (linked list & array), string reverse, undo/redo, bracket problem, celebrity problem, queue, queue using 2 stacks (part 1/2)\n05:56:20–06:46:14 — Stack (linked list & array), string reverse, undo/redo, bracket problem, celebrity problem, queue, queue using 2 stacks (part 2/2)", "source": "Your resources", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "1bea559709", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Stacks & queues", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Valid Parentheses (20)", "source": "External (gap-filler)", "date": "2026-10-16", "dateLabel": "16 Oct", "addon": "", "addonFollow": ""}, {"id": "ee87cd3556", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Stacks & queues", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Min Stack (155)\nDaily Temperatures (739)", "source": "External (gap-filler)", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "", "addonFollow": ""}, {"id": "95b6f865ae", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Linked lists", "priority": "Must", "resource": "DSA with Python — one-shot video (your project file, timestamps)", "follow": "02:49:52–03:35:24 — Node, insert/delete head/tail/middle, traversal, search, in-place reversal (part 1/3)\n03:35:24–04:20:55 — Node, insert/delete head/tail/middle, traversal, search, in-place reversal (part 2/3)\n04:20:55–05:06:27 — Node, insert/delete head/tail/middle, traversal, search, in-place reversal (part 3/3)", "source": "Your resources", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "", "addonFollow": ""}, {"id": "4852377bca", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Linked lists", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Reverse Linked List (206)", "source": "External (gap-filler)", "date": "2026-10-17", "dateLabel": "17 Oct", "addon": "", "addonFollow": ""}, {"id": "e80f76f444", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Linked lists", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Merge Two Sorted Lists (21)\nMiddle of the Linked List (876)\nLinked List Cycle (141)\nRemove Nth Node From End (19)\nAdd Two Numbers (2)", "source": "External (gap-filler)", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "", "addonFollow": ""}, {"id": "ce30063c1f", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Intervals", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Merge Intervals (56)\nInsert Interval (57)\nNon-overlapping Intervals (435)", "source": "External (gap-filler)", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "", "addonFollow": ""}, {"id": "b9e62a338e", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Trees: traversals", "priority": "Must", "resource": "CampusX — Binary Search Tree (playlist, 1 video)", "follow": "The single video", "source": "Your resources", "date": "2026-10-18", "dateLabel": "18 Oct", "addon": "", "addonFollow": ""}, {"id": "a11e14b4e1", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Trees: traversals", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Max Depth (104)\nInvert Tree (226)\nInorder Traversal (94)\nLevel Order (102)\nSame Tree (100)\nLCA of BST (235)\nPath Sum III (437)", "source": "External (gap-filler)", "date": "2026-10-19", "dateLabel": "19 Oct", "addon": "", "addonFollow": ""}, {"id": "788afd9133", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Graphs: grid BFS / DFS", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Number of Islands (200)\nMax Area of Island (695)", "source": "External (gap-filler)", "date": "2026-10-19", "dateLabel": "19 Oct", "addon": "", "addonFollow": ""}, {"id": "1f2681cf50", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Graphs: grid BFS / DFS", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Rotting Oranges (994)\nClone Graph (133)\nCourse Schedule (207)", "source": "External (gap-filler)", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "", "addonFollow": ""}, {"id": "ea4af6b4e8", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Heaps", "priority": "Must", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Kth Largest Element in an Array (215)\nLast Stone Weight (1046)\nK Closest Points to Origin (973)\nFind Median from Data Stream (295)", "source": "External (gap-filler)", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "", "addonFollow": ""}, {"id": "859f8e5bf6", "tab": "Coding", "area": "9. DSA & coding — NumPy & Pandas (live notebook)", "topic": "NumPy: indexing, axis, broadcasting, vectorized maths", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§7 Data Analysis using NumPy — all 7 lectures: Why NumPy\nCreating arrays\nIndexing & slicing", "source": "Your resources", "date": "2026-10-20", "dateLabel": "20 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 7 — NumPy (4 lectures) + Assignment A9"}, {"id": "0ea4e26017", "tab": "Coding", "area": "9. DSA & coding — NumPy & Pandas (live notebook)", "topic": "NumPy: indexing, axis, broadcasting, vectorized maths", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "Multidimensional indexing & axis\nData types\nBroadcasting\nBuilt-in math functions", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "", "addonFollow": ""}, {"id": "258c3a2150", "tab": "Coding", "area": "9. DSA & coding — NumPy & Pandas (live notebook)", "topic": "Pandas: filtering, groupby, merges, pivot", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§8 Data Analysis using Pandas — all 10 lectures: Getting started\nCore structures\nCreating DataFrames\nSelection & filtering\nCleaning\nTransformation\nMelt & pivot", "source": "Your resources", "date": "2026-10-21", "dateLabel": "21 Oct", "addon": "1) TuteDude — Generative AI course\n2) CampusX — Pandas (course, 21 lessons)", "addonFollow": "1) Module 8 — L1–L9 Pandas + Assignment A10\n2) Alternative/extra practice — groupby & merge lessons only"}, {"id": "4bfdc0733b", "tab": "Coding", "area": "9. DSA & coding — NumPy & Pandas (live notebook)", "topic": "Pandas: filtering, groupby, merges, pivot", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "Aggregation & grouping\nMerging & joining\nCSVs", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "baa372dd8d", "tab": "Coding", "area": "9. DSA & coding — NumPy & Pandas (live notebook)", "topic": "Visualisation: Matplotlib & Seaborn", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§9 Data Visualization — all 10 lectures (plotting, bar, pie, stack, histogram, scatter, subplots, Seaborn intro & plot types)", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 10 — L1–L7 Seaborn (relational, distribution, categorical, regression plots)"}, {"id": "868f48c9c2", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "Linear regression (closed form + GD) in NumPy", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#51 Simple LR code from scratch\n#55 Multiple LR code from scratch\n#58 Batch GD with code", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "d401149078", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "Logistic regression from scratch", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#75 Logistic Regression Part 5 — Gradient Descent & Code From Scratch", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "98676af791", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "K-means from scratch", "priority": "Must", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#130 K-Means Clustering From Scratch in Python", "source": "Your resources", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "03b9bb7524", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "Stable softmax", "priority": "Must", "resource": "Stanford CS231n notes — Linear Classification", "follow": "'Practical issues: Numeric stability' (subtract max)", "source": "External (gap-filler)", "date": "2026-10-22", "dateLabel": "22 Oct", "addon": "", "addonFollow": ""}, {"id": "370f5e0330", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "FNN forward / backward (NumPy) + PyTorch version", "priority": "Must", "resource": "Mitesh M. Khapra — CS7015 Deep Learning, IIT Madras (YouTube videos + slides)", "follow": "Lecture 4 backprop equations → implement for 2 hidden layers (Oracle question)", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "1) CampusX — 100 Days of Deep Learning (YouTube playlist, 84 videos)", "addonFollow": "1) Video 'Backpropagation Part 2 – The How' (code-along)"}, {"id": "9b9523ece3", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "Self-attention in PyTorch (single → multi-head → causal mask)", "priority": "Must", "resource": "Andrej Karpathy — 'Let's build GPT: from scratch, in code, spelled out' (YouTube)", "follow": "First ~60 min (self-attention, masking, multi-head)", "source": "External (gap-filler)", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "fd01c389d7", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "PMF sampling, shuffling, simulations", "priority": "Must", "resource": "Interview Question Bank (your project file)", "follow": "§9 Intuit simulate(prob_dict) without NumPy\nIntuit in-place shuffle\nOLA fair die\nIntuit simulate π\nNetradyne cointoss → [a,b]", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "99ca314225", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "PMF sampling, shuffling, simulations", "priority": "Must", "resource": "LeetCode", "follow": "Shuffle an Array (384) — Fisher–Yates", "source": "External (gap-filler)", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "40dbbe5657", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "End-to-end sklearn workflow", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§16 Practical ML using Scikit-learn — L1–L10 (Iris, house prices, EDA, test set, stratified split, visualization, missing data)\n§16 — L11–L20 (sklearn design, categorical, scaling, pipelines, ColumnTransformer, training, joblib persistence)", "source": "Your resources", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 12 — L33–L35 Building a Demo ML Model 1–3"}, {"id": "836ba90c0b", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "Fraud / churn notebook: imbalance, PR-AUC, threshold, XGBoost", "priority": "Must", "resource": "Kaggle — 'Credit Card Fraud Detection' dataset (mlg-ulb/creditcardfraud)", "follow": "Build: Pipeline", "source": "External (gap-filler)", "date": "2026-10-23", "dateLabel": "23 Oct", "addon": "", "addonFollow": ""}, {"id": "9ad9d07795", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "Fraud / churn notebook: imbalance, PR-AUC, threshold, XGBoost", "priority": "Must", "resource": "Kaggle — 'Credit Card Fraud Detection' dataset (mlg-ulb/creditcardfraud)", "follow": "class_weight vs SMOTE\nRF vs XGBoost\nPR-AUC\nthreshold tuning", "source": "External (gap-filler)", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "", "addonFollow": ""}, {"id": "4f9cc98147", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "Fraud / churn notebook: imbalance, PR-AUC, threshold, XGBoost", "priority": "Must", "resource": "Kaggle — 'Telco Customer Churn' dataset (blastchar)", "follow": "EDA + logistic regression baseline + metrics", "source": "External (gap-filler)", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "", "addonFollow": ""}, {"id": "161c0f143d", "tab": "Coding", "area": "Coding for 3. DL (PyTorch)", "topic": "PyTorch basics: tensors, autograd, nn.Module, DataLoader, training loop", "priority": "Must", "resource": "CampusX — Practical Deep Learning using PyTorch (course, 14 lessons)", "follow": "Lessons 1–~7 (tensors → autograd → training pipeline → nn.Module → Dataset/DataLoader → ANN)", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) PyTorch — 'Learn the Basics' tutorial (pytorch.org) (external)", "addonFollow": "1) All 8 pages"}, {"id": "e4ba8a9f6e", "tab": "Coding", "area": "Coding for 4. CV (projects)", "topic": "CNNs & transfer learning in PyTorch", "priority": "Must", "resource": "CampusX — Practical Deep Learning using PyTorch (course)", "follow": "CNN lesson + transfer-learning lesson", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) CampusX — Image Processing Using OpenCV (playlist, 13 videos)", "addonFollow": "1) Selective — resizing, flipping, blurring (augmentations; Razorpay asked)"}, {"id": "bc2493dbfc", "tab": "Coding", "area": "Coding for 4. CV (projects)", "topic": "Project 1 — CIFAR-10: CNN from scratch → ResNet-18 transfer learning", "priority": "Must", "resource": "PyTorch tutorial — 'Training a Classifier' (CIFAR-10)", "follow": "Baseline CNN (conv → BN → ReLU → pool), augmentation", "source": "External (gap-filler)", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "1) PyTorch tutorial — 'Transfer Learning for Computer Vision' (external)", "addonFollow": "1) Fine-tune ResNet-18; compare accuracy, params, time; README + GitHub"}, {"id": "89f4de35bd", "tab": "Coding", "area": "Coding for 5. NLP", "topic": "Text cleaning, BoW / TF-IDF, Word2Vec", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 13 — L12–L20 (basic & advanced text cleaning, preprocessing, OHE/BoW, n-grams & TF-IDF, Word2Vec training) + Assignments A17–A19", "source": "Your resources", "date": "2026-10-24", "dateLabel": "24 Oct", "addon": "", "addonFollow": ""}, {"id": "3f89bca99b", "tab": "Coding", "area": "Coding for 5. NLP", "topic": "RNN / LSTM text models", "priority": "Must", "resource": "TuteDude — Generative AI course", "follow": "Module 20 — L1–L6 Simple RNN project (embedding layer)\nModule 22 — L1–L4 LSTM next-word prediction", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "", "addonFollow": ""}, {"id": "21740717ac", "tab": "Coding", "area": "Coding for 6. GenAI / RAG", "topic": "Build a RAG app (chunk → embed → FAISS → retrieve → prompt)", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§23 Project 3 – RAG based AI Teaching Assistant — L1–L16 (+ bonus 1–4 on improving chunks/embeddings)", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 29 — L6 YouTube Content Chatbot (RAG) · Module 33 — RAG Document Q&A with Groq & Llama3 (L1–L2) + Assignments A23, A30"}, {"id": "abef913d9e", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "SQL basics: create, select, update, constraints", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§11 SQL for Data Science — L1–L12 (intro, install MySQL, create DB/table, modify, insert, select, update, delete, transactions, date-time, constraints)", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "1) CampusX — SQL for Data Science (course, 6 lessons)", "addonFollow": "1) Alternative / revision"}, {"id": "02f2c9eb0b", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Joins, GROUP BY / HAVING, subqueries", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§11 — L13 Foreign Keys\nL14 Joins\nL15 UNION\nL19 Subqueries\nL20 GROUP BY", "source": "Your resources", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "", "addonFollow": ""}, {"id": "b7109dc935", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Joins, GROUP BY / HAVING, subqueries", "priority": "Must", "resource": "LeetCode — SQL 50 study plan", "follow": "'Select' (5)\n'Basic Joins' (9)", "source": "External (gap-filler)", "date": "2026-10-25", "dateLabel": "25 Oct", "addon": "", "addonFollow": ""}, {"id": "8282436b8d", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Joins, GROUP BY / HAVING, subqueries", "priority": "Must", "resource": "LeetCode — SQL 50 study plan", "follow": "'Basic Aggregate Functions' (8)\n'Sorting and Grouping' (7)\n'Advanced Select and Joins' (7)\n'Subqueries' (7)\n'Advanced String Functions / Regex / Clause' (7)", "source": "External (gap-filler)", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "", "addonFollow": ""}, {"id": "1d5a2a256a", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Window functions", "priority": "Must", "resource": "CampusX — SQL Interview Questions (playlist, 1 video)", "follow": "The single video", "source": "Your resources", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "1) Mode — SQL Tutorial (external)", "addonFollow": "1) 'SQL Window Functions' page"}, {"id": "1229bb2be0", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Window functions", "priority": "Must", "resource": "LeetCode", "follow": "Rank Scores (178)\nConsecutive Numbers (180)\nSecond Highest Salary (176)", "source": "External (gap-filler)", "date": "2026-10-26", "dateLabel": "26 Oct", "addon": "", "addonFollow": ""}, {"id": "8f4063dad0", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Window functions", "priority": "Must", "resource": "LeetCode", "follow": "Department Top Three Salaries (185)", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "", "addonFollow": ""}, {"id": "e992dc1acb", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Basic Git", "priority": "Must", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§21 Git for Data Scientists — L1–L14 (workflow, commits, branches, merge conflicts, GitHub, .gitignore, stash, VS Code)", "source": "Your resources", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "1) CampusX — Git and Github (playlist, 3 videos)", "addonFollow": "1) All 3 — quick revision"}, {"id": "864ae8f3fe", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "DP basics", "priority": "Important", "resource": "NeetCode 150 / LeetCode (Python)", "follow": "Climbing Stairs (70)\nHouse Robber (198)\nUnique Paths (62)\nCoin Change (322)\nLongest Increasing Subsequence (300)", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "", "addonFollow": ""}, {"id": "a081b175d3", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "DP basics", "priority": "Important", "resource": "LeetCode", "follow": "Knight Probability in Chessboard (688) — Intuit asked this", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "", "addonFollow": ""}, {"id": "b5c03c5aaf", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "BFS with constraints", "priority": "Important", "resource": "LeetCode", "follow": "Cheapest Flights Within K Stops (787)", "source": "External (gap-filler)", "date": "2026-10-27", "dateLabel": "27 Oct", "addon": "", "addonFollow": ""}, {"id": "5db6194578", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "BFS with constraints", "priority": "Important", "resource": "LeetCode", "follow": "Shortest Path in Binary Matrix (1091)\nJump Game (55)", "source": "External (gap-filler)", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "", "addonFollow": ""}, {"id": "38e71d5a74", "tab": "Coding", "area": "9. DSA & coding — patterns (LeetCode)", "topic": "Greedy scheduling", "priority": "Important", "resource": "LintCode / LeetCode / GfG", "follow": "Meeting Rooms (LintCode 920)\nMeeting Rooms II (LintCode 919)\nTask Scheduler (LC 621)\nMinimum Platforms (GfG)", "source": "External (gap-filler)", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "", "addonFollow": ""}, {"id": "047737ae21", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "Inverse-CDF sampling & birthday simulation", "priority": "Important", "resource": "Interview Question Bank (your project file)", "follow": "§7 Goldman sampling from a CDF — code inverse-CDF for exponential; simulate the birthday problem", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "", "addonFollow": ""}, {"id": "7e86a22013", "tab": "Coding", "area": "9. DSA & coding — ML from scratch", "topic": "PCA, Adam, matrix-factorization recommender from scratch", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#49 PCA code example (then write your own eigen/SVD version)", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 13 — L6–L11 Recommendation System project (build MF with SGD alongside)"}, {"id": "5933a633b4", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "SVM kernels, KNN, NB, k-means in sklearn", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#96 Kernel trick code example", "source": "Your resources", "date": "2026-10-28", "dateLabel": "28 Oct", "addon": "", "addonFollow": ""}, {"id": "3cec327e69", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "SVM kernels, KNN, NB, k-means in sklearn", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#129 K-Means in Python (practical example)", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "", "addonFollow": ""}, {"id": "578da9c193", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "Time-series features in pandas", "priority": "Important", "resource": "CampusX — 100 Days of Machine Learning (YouTube playlist, 134 videos)", "follow": "#34 Handling Date and Time Variables (then build lag / rolling features with shift & rolling, TimeSeriesSplit)", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "", "addonFollow": ""}, {"id": "50326fe8f4", "tab": "Coding", "area": "Coding for 1–2. ML (applied, scikit-learn)", "topic": "Debug sklearn code (leakage, scaling y)", "priority": "Important", "resource": "Interview Question Bank (your project file)", "follow": "§9 Intuit — find logical errors in logistic-regression / sklearn snippets (×3)", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "", "addonFollow": ""}, {"id": "228696d6a9", "tab": "Coding", "area": "Coding for 3. DL (PyTorch)", "topic": "ANN project (Keras) — optional comparison", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 17 — L1–L9 ANN classification & regression project (skip L10–13 KerasTuner)", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "", "addonFollow": ""}, {"id": "0455703b19", "tab": "Coding", "area": "Coding for 4. CV (projects)", "topic": "Project 2 — U-Net segmentation (nuclei / skin lesions), Dice + BCE", "priority": "Important", "resource": "Ronneberger et al. — U-Net paper", "follow": "Implement the Fig. 1 architecture in PyTorch; Dice + BCE loss; IoU/Dice metrics; compare BCE-only vs Dice+BCE", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) Kaggle — '2018 Data Science Bowl' (nuclei) or ISIC 2018 Task 1 (external)", "addonFollow": "1) Dataset + masks"}, {"id": "77e229fd38", "tab": "Coding", "area": "Coding for 4. CV (projects)", "topic": "Project 3 — ViT vs CNN on MedMNIST", "priority": "Important", "resource": "MedMNIST v2 (medmnist.com) — BloodMNIST or DermaMNIST", "follow": "Same split for ViT and ResNet-18", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) Hugging Face — Transformers docs: 'Image classification' task guide (external)", "addonFollow": "1) Fine-tune a ViT; table of accuracy / macro-F1 / params / time; README"}, {"id": "686bbf8a47", "tab": "Coding", "area": "Coding for 5. NLP", "topic": "Hugging Face fine-tune (DistilBERT) — optional", "priority": "Important", "resource": "Hugging Face — NLP Course", "follow": "Ch 3 'Fine-tuning a pretrained model'", "source": "External (gap-filler)", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "", "addonFollow": ""}, {"id": "9de8a24e25", "tab": "Coding", "area": "Coding for 6. GenAI / RAG", "topic": "Agents & tool calling", "priority": "Important", "resource": "TuteDude — Generative AI course", "follow": "Module 35 — L1–L7 (tools, tool calling, ReAct agent) + Assignment A32", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) CampusX — Agentic AI using LangGraph (playlist, 28 videos)", "addonFollow": "1) First few videos only (what is agentic AI, first graph)"}, {"id": "cf5589c002", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "OOP in Python", "priority": "Important", "resource": "CodeWithHarry — Python Tutorial for Beginners (11-hr one-shot, YouTube)", "follow": "Ch 10–11 (06:42:00–07:25:00): OOP, inheritance & more on OOP (part 1/2)", "source": "Your resources", "date": "2026-10-29", "dateLabel": "29 Oct", "addon": "1) TuteDude — Generative AI course", "addonFollow": "1) Module 5 — L1–L8 (concepts, inheritance, polymorphism, encapsulation, abstraction, magic methods, operator overloading)"}, {"id": "6a645c5306", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "OOP in Python", "priority": "Important", "resource": "CodeWithHarry — Python Tutorial for Beginners (11-hr one-shot, YouTube)", "follow": "Ch 10–11 (07:25:00–08:08:00): OOP, inheritance & more on OOP (part 2/2)", "source": "Your resources", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "", "addonFollow": ""}, {"id": "797f98a19d", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "REST / HTTP basics", "priority": "Important", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§18 Web Development for Data Scientists — 'Introduction to Flask'\n'Query Parameters'\n'Creating an API in Flask'", "source": "Your resources", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "1) TuteDude — Generative AI course\n2) CampusX — FastAPI for Machine Learning (course, 13 lessons)", "addonFollow": "1) Module 30 — L11 Creating APIs using FastAPI · L12 Serving Groq App using FastAPI\n2) First 3–4 lessons (HTTP methods, path/query params)"}, {"id": "9a77a5e186", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "DBMS keys & normalization", "priority": "Important", "resource": "CodeWithHarry — The Ultimate Job Ready Data Science Course", "follow": "§11 — L12 Deep Dive into Constraints\nL13 Foreign Keys\nL17 Views\nL18 Indexes", "source": "Your resources", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "1) CampusX — Databases (course, 5 lessons)\n2) GeeksforGeeks (external)", "addonFollow": "1) All 5 lessons\n2) 'Normal Forms in DBMS' (1NF–BCNF) + 'Types of Keys in DBMS'"}, {"id": "d7325df84e", "tab": "Coding", "area": "10. Systems, SQL & CS basics", "topic": "Threads vs processes; OS MCQs (scheduling, deadlock, paging)", "priority": "Important", "resource": "GeeksforGeeks", "follow": "'Difference between Process and Thread' + OS quizzes: CPU scheduling, deadlock, paging", "source": "External (gap-filler)", "date": "2026-10-30", "dateLabel": "30 Oct", "addon": "", "addonFollow": ""}];
-const STATUSES = ["Not started", "In progress", "Done", "Revise again"];
+const STATUSES = ["Not started","In progress","Done","Revise again"];
+const STATUS_COLOR = {"Done":"#10b981","In progress":"#f59e0b","Revise again":"#ef4444","Not started":"#94a3b8"};
 const STORE_KEY = "placement-tracker-v1";
-const pad = n => String(n).padStart(2, "0");
+const THEME_KEY = "placement-theme";
+const pad = n => String(n).padStart(2,"0");
 const localISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const TODAY = localISO(new Date());
-
-let progress = loadProgress();
-
-function loadProgress() {
-  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
-}
-function saveProgress() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (e) {}
-}
-function statusOf(item) { return progress[item.id] || "Not started"; }
-function setStatus(id, s) {
-  progress[id] = s; saveProgress();
-  renderEverything();
-}
+const DAYS = []; for (let n=9;n<=30;n++) DAYS.push(`2026-10-${pad(n)}`);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const cls = s => "st-" + s.replace(/\s+/g, "-");
-const pct = (n, d) => d ? Math.round(100 * n / d) : 0;
-const fmtDay = iso => { const [y,m,d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-GB", {weekday:"short", day:"numeric", month:"short"}); };
+const pct = (n,d) => d ? Math.round(100*n/d) : 0;
+const cls = s => "st-" + s.replace(/\s+/g,"-");
+const $ = id => document.getElementById(id);
 
-function statusSelect(item) {
-  const cur = statusOf(item);
-  return `<select class="status" data-id="${item.id}">` +
-    STATUSES.map(s => `<option ${s===cur?"selected":""}>${s}</option>`).join("") + `</select>`;
-}
-function prioTag(p) { return `<span class="tag ${p==="Must"?"must":"imp"}">${esc(p)}</span>`; }
-function srcTag(s) { return (s||"").startsWith("External") ? `<span class="tag ext">external</span>` : ""; }
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) {}
+const statusOf = it => progress[it.id] || "Not started";
+function saveProgress(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch(e){} }
 
-// ---------- Overall
-function renderOverall() {
-  const total = ITEMS.length;
-  const done = ITEMS.filter(i => statusOf(i) === "Done").length;
-  const overdue = ITEMS.filter(i => i.date && i.date < TODAY && statusOf(i) !== "Done").length;
-  document.getElementById("overallBar").style.width = pct(done, total) + "%";
-  document.getElementById("overallText").textContent = `${done} / ${total} done (${pct(done,total)}%)`;
-  document.getElementById("overdueText").textContent = `${overdue} overdue`;
-}
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),1800); }
 
-// ---------- By area
-function renderArea() {
-  const groups = new Map();
-  for (const it of ITEMS) {
-    const key = it.tab + " · " + it.area;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(it);
-  }
-  let html = "";
-  for (const [key, items] of groups) {
-    const done = items.filter(i => statusOf(i)==="Done").length;
-    const topics = new Map();
-    for (const it of items) { if (!topics.has(it.topic)) topics.set(it.topic, []); topics.get(it.topic).push(it); }
-    html += `<div class="card"><h3>${esc(key)}</h3>
-      <div class="progress-line"><div class="bar"><span style="width:${pct(done,items.length)}%"></span></div>
-      <span class="stat">${done}/${items.length} rows · ${pct(done,items.length)}%</span></div>
-      <details><summary>Show topics (${topics.size})</summary>`;
-    for (const [topic, tItems] of topics) {
-      const td = tItems.filter(i=>statusOf(i)==="Done").length;
-      const first = tItems[0];
-      html += `<div style="margin:10px 0 4px"><strong>${esc(topic)}</strong> ${prioTag(first.priority)}
-        <span class="stat"> ${td}/${tItems.length} done</span></div>`;
-      html += `<table><tbody>` + tItems.map(it => `
-        <tr class="${cls(statusOf(it))}">
-          <td style="width:90px">${it.date ? fmtDay(it.date) : esc(it.dateLabel)}</td>
-          <td>${esc(it.resource)} ${srcTag(it.source)}<div class="meta">${esc(it.follow)}</div></td>
-          <td style="width:150px">${statusSelect(it)}</td></tr>`).join("") + `</tbody></table>`;
-    }
-    html += `</details></div>`;
-  }
-  document.getElementById("view-area").innerHTML = html;
+function ring(p, size=150, stroke=14, color1="#4f46e5", color2="#06b6d4", label=null){
+  const r=(size-stroke)/2, c=2*Math.PI*r, off=c*(1-p/100);
+  const id="g"+Math.random().toString(36).slice(2,8);
+  return `<div class="ring" style="width:${size}px;height:${size}px">
+    <svg width="${size}" height="${size}" style="transform:rotate(-90deg)">
+      <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${color1}"/><stop offset="1" stop-color="${color2}"/></linearGradient></defs>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(148,163,184,.22)" stroke-width="${stroke}"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="url(#${id})" stroke-width="${stroke}"
+        stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" style="transition:stroke-dashoffset .8s ease"/>
+    </svg>
+    <span style="font-size:${Math.round(size*0.22)}px">${label ?? p+"%"}</span>
+  </div>`;
 }
 
-
-function addonHtml(it) {
-  if (!it.addon) return "";
-  const names = it.addon.split(/\n(?=\d+\) )/);
-  const follows = (it.addonFollow || "").split(/\n(?=\d+\) )/);
-  const rows = names.map((n, i) => {
-    const name = n.replace(/^\d+\) /, "");
-    const f = (follows[i] || "").replace(/^\d+\) /, "");
-    return `<div style="margin-top:5px"><strong>${esc(name)}</strong>${f ? `<div style="white-space:pre-line">${esc(f)}</div>` : ""}</div>`;
+function prioTag(p){ return `<span class="tag ${p==="Must"?"must":"imp"}">${esc(p)}</span>`; }
+function srcTag(s){ return (s||"").startsWith("External") ? `<span class="tag ext">external</span>` : ""; }
+function fmtDay(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(y,m-1,d).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}); }
+function statusSelect(it){
+  const cur=statusOf(it);
+  return `<select class="status" data-id="${it.id}" style="color:${STATUS_COLOR[cur]}">` +
+    STATUSES.map(s=>`<option ${s===cur?"selected":""}>${s}</option>`).join("") + `</select>`;
+}
+function addonHtml(it){
+  if(!it.addon) return "";
+  const names=it.addon.split(/\n(?=\d+\) )/), follows=(it.addonFollow||"").split(/\n(?=\d+\) )/);
+  const rows=names.map((n,i)=>{
+    const name=n.replace(/^\d+\) /,""), f=(follows[i]||"").replace(/^\d+\) /,"");
+    return `<div style="margin-top:6px"><strong>${esc(name)}</strong>${f?`<div style="white-space:pre-line">${esc(f)}</div>`:""}</div>`;
   }).join("");
-  return `<div class="addon"><strong>Add-on resources</strong>${rows}</div>`;
+  return `<div class="addon"><strong>➕ Add-on resources</strong>${rows}</div>`;
 }
 
-// ---------- By date
-function renderDate() {
-  const days = [];
-  for (let n = 9; n <= 30; n++) days.push(`2026-10-${pad(n)}`);
-  const everyDay = ITEMS.filter(i => !i.date);
-  let html = `<div class="legend">Grouped by the target date in your plan. Red = past date and not finished.</div>`;
-  html += days.map(day => {
-    const items = ITEMS.filter(i => i.date === day);
-    const done = items.filter(i => statusOf(i)==="Done").length;
-    const late = day < TODAY && done < items.length;
-    const todayCls = day === TODAY ? " today" : "";
-    return `<div class="card${todayCls}"><h3>${fmtDay(day)}
-      ${late ? '<span class="overdue">overdue</span>' : ""}
-      ${day===TODAY ? '<span class="todaypill">today</span>' : ""}
-      <span class="stat">${done}/${items.length} done</span></h3>
-      <div class="progress-line"><div class="bar"><span style="width:${pct(done,items.length)}%"></span></div></div>` +
-      (items.length ? items.map(it => `
-        <div class="row ${cls(statusOf(it))}">
-          <div>
-            <div class="meta">${esc(it.area)} · ${esc(it.topic)} ${prioTag(it.priority)} ${srcTag(it.source)}</div>
+/* ---------- counts ---------- */
+function counts(list){
+  const c={"Done":0,"In progress":0,"Revise again":0,"Not started":0};
+  list.forEach(it=>c[statusOf(it)]++);
+  return c;
+}
+
+/* ---------- dashboard ---------- */
+function renderDash(){
+  const total=ITEMS.length, c=counts(ITEMS), done=c["Done"];
+  const p=pct(done,total);
+  const overdue=ITEMS.filter(i=>i.date && i.date<TODAY && statusOf(i)!=="Done").length;
+  const theory=ITEMS.filter(i=>i.tab==="Theory"), coding=ITEMS.filter(i=>i.tab==="Coding");
+  const td=theory.filter(i=>statusOf(i)==="Done").length, cd=coding.filter(i=>statusOf(i)==="Done").length;
+
+  // hero
+  const quotes=[[0,"Let's get started 🚀"],[10,"Nice start — keep the momentum!"],[30,"You're building real momentum 💪"],[60,"More than halfway. Stay steady!"],[90,"So close — finish strong 🏁"],[100,"All done. Amazing work! 🎉"]];
+  let q=quotes[0][1]; quotes.forEach(([t,m])=>{ if(p>=t) q=m; });
+  $("quote").textContent=q;
+  $("heroRing").innerHTML=ring(p,170,16,"#4f46e5","#06b6d4");
+  $("heroMeta").textContent=`${done} of ${total} rows finished · ${c["In progress"]} in progress · ${c["Revise again"]} to revise`;
+  const now=new Date(); const start=new Date(2026,9,9), end=new Date(2026,9,30);
+  const daysLeft=Math.ceil((end-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
+  const toStart=Math.ceil((start-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);
+  let cd_html = "";
+  if (toStart>0) cd_html += `<span class="pill">🗓 Starts in ${toStart} day${toStart>1?"s":""}</span>`;
+  else if (daysLeft>=0) cd_html += `<span class="pill">⏳ ${daysLeft} day${daysLeft===1?"":"s"} left to 30 Oct</span>`;
+  else cd_html += `<span class="pill">✅ Plan window finished</span>`;
+  if (overdue) cd_html += `<span class="pill hot">⚠ ${overdue} overdue</span>`;
+  $("countdown").innerHTML=cd_html;
+
+  // status bar
+  $("segBar").innerHTML=STATUSES.map(s=>`<i style="width:${pct(c[s],total)}%;background:${STATUS_COLOR[s]}"></i>`).join("");
+  $("segLegend").innerHTML=STATUSES.map(s=>`<span><b style="background:${STATUS_COLOR[s]}"></b>${s} · ${c[s]}</span>`).join("");
+
+  $("tcText").textContent=`Theory ${td}/${theory.length} (${pct(td,theory.length)}%) · Coding ${cd}/${coding.length} (${pct(cd,coding.length)}%)`;
+  $("tcBar").style.width=pct(done,total)+"%";
+
+  // stat tiles
+  const tiles=[
+    ["Done",c["Done"],`${p}% of plan`,STATUS_COLOR["Done"]],
+    ["In progress",c["In progress"],"currently studying",STATUS_COLOR["In progress"]],
+    ["Revise again",c["Revise again"],"needs another pass",STATUS_COLOR["Revise again"]],
+    ["Not started",c["Not started"],"still to begin",STATUS_COLOR["Not started"]],
+  ];
+  $("statTiles").innerHTML=tiles.map(([l,n,f,col])=>`
+    <div class="card stat" style="--c:${col}"><div class="label">${l}</div><div class="num">${n}</div><div class="foot">${f}</div></div>`).join("");
+
+  // timeline chart: items per day, fill = done share
+  const maxItems=Math.max(...DAYS.map(d=>ITEMS.filter(i=>i.date===d).length),1);
+  $("chart").innerHTML=DAYS.map(d=>{
+    const list=ITEMS.filter(i=>i.date===d), dn=list.filter(i=>statusOf(i)==="Done").length;
+    const h=Math.max(8, Math.round(100*list.length/maxItems));
+    const fill=pct(dn,list.length);
+    const short=fmtDay(d).replace(",","").split(" ");
+    return `<div class="col ${d===TODAY?"today":""}" title="${fmtDay(d)}: ${dn}/${list.length} done">
+      <div class="bar-v" style="height:${h}%"><i style="height:${fill}%"></i></div>
+      <div class="d">${short[1]||""}</div></div>`;
+  }).join("");
+
+  // area cards
+  const groups=groupBy(ITEMS,i=>i.tab+" · "+i.area);
+  $("areaGrid").innerHTML=[...groups.entries()].map(([k,list])=>{
+    const dn=list.filter(i=>statusOf(i)==="Done").length, p2=pct(dn,list.length);
+    const [tab,...rest]=k.split(" · ");
+    const tone=p2>=100?"green":p2>=50?"":"amber";
+    return `<div class="card area">
+      ${ring(p2,74,8,"#4f46e5","#06b6d4")}
+      <div class="info"><div class="tab">${tab}</div><div class="name" title="${esc(rest.join(" · "))}">${esc(rest.join(" · "))}</div>
+      <div class="numbers">${dn}/${list.length} rows done</div>
+      <div class="bar thin ${tone}"><i style="width:${p2}%"></i></div></div></div>`;
+  }).join("");
+}
+
+function groupBy(list,fn){ const m=new Map(); list.forEach(x=>{const k=fn(x); if(!m.has(k)) m.set(k,[]); m.get(k).push(x);}); return m; }
+
+/* ---------- by area ---------- */
+function renderArea(){
+  const groups=groupBy(ITEMS,i=>i.tab+" · "+i.area);
+  $("areaList").innerHTML=[...groups.entries()].map(([k,items])=>{
+    const dn=items.filter(i=>statusOf(i)==="Done").length, p2=pct(dn,items.length);
+    const topics=groupBy(items,i=>i.topic);
+    const tBody=[...topics.entries()].map(([topic,tItems])=>{
+      const td2=tItems.filter(i=>statusOf(i)==="Done").length;
+      return `<div class="topic">${esc(topic)} ${prioTag(tItems[0].priority)}
+        <span class="meta" style="color:var(--muted);font-weight:600;font-size:12px">${td2}/${tItems.length} done</span></div>
+        ${tItems.map(it=>`<div class="row ${cls(statusOf(it))}">
+          <div><div class="res">${esc(it.resource)} ${srcTag(it.source)}</div>
+          <div class="follow">${esc(it.follow)}</div>${addonHtml(it)}</div>
+          <div>${statusSelect(it)}</div></div>`).join("")}`;
+    }).join("");
+    return `<div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        ${ring(p2,80,9,"#4f46e5","#06b6d4")}
+        <div style="flex:1;min-width:200px"><div class="sub" style="margin:0;color:var(--primary);font-weight:800">${esc(k.split(" · ")[0])}</div>
+        <h2 style="font-size:17px">${esc(k.split(" · ").slice(1).join(" · "))}</h2>
+        <div class="sub" style="margin:4px 0 0">${dn} of ${items.length} rows done · ${topics.size} topics</div></div>
+      </div>
+      <details class="topics" style="margin-top:12px"><summary>Show topics & resources</summary><div style="margin-top:8px">${tBody}</div></details>
+    </div>`;
+  }).join("");
+}
+
+/* ---------- by date ---------- */
+function renderDate(){
+  $("dateList").innerHTML = DAYS.map(d=>{
+    const list=ITEMS.filter(i=>i.date===d), dn=list.filter(i=>statusOf(i)==="Done").length;
+    const [y,m,dd]=d.split("-").map(Number);
+    const dt=new Date(y,m-1,dd);
+    const dow=dt.toLocaleDateString("en-GB",{weekday:"short"});
+    const mo=dt.toLocaleDateString("en-GB",{month:"short"});
+    const late= d<TODAY && dn<list.length;
+    const future= d>TODAY;
+    const dayCls=[d===TODAY?"today":"", late?"late":"", future?"future":""].join(" ");
+    return `<div class="day ${dayCls}">
+      <div class="date"><div class="dow">${dow}</div><div class="dn">${dd}</div><div class="mo">${mo}</div></div>
+      <div class="card" style="padding:16px">
+        <div class="head">
+          <span class="title">${list.length} item${list.length===1?"":"s"}</span>
+          ${d===TODAY?'<span class="pill" style="background:var(--primary);color:#fff;border-color:transparent">Today</span>':""}
+          ${late?'<span class="pill hot">Overdue</span>':""}
+          <span class="pill">${dn}/${list.length} done</span>
+          <div class="bar thin" style="flex:1;min-width:120px"><i style="width:${pct(dn,list.length)}%"></i></div>
+        </div>
+        ${list.length? list.map(it=>`<div class="row ${cls(statusOf(it))}">
+            <div><div class="meta">${esc(it.area)} · ${esc(it.topic)} ${prioTag(it.priority)} ${srcTag(it.source)}</div>
             <div class="res">${esc(it.resource)}</div>
-            <div class="follow">${esc(it.follow)}</div>
-            ${addonHtml(it)}
-          </div>
-          <div>${statusSelect(it)}</div>
-        </div>`).join("") : `<div class="meta">Nothing scheduled.</div>`) +
-      `</div>`;
-  }).join("");
-  if (everyDay.length) {
-    html += `<div class="card"><h3>Every day</h3>` + everyDay.map(it => `
-      <div class="row"><div><div class="meta">${esc(it.area)} · ${esc(it.topic)}</div>
-      <div class="res">${esc(it.resource)}</div><div class="follow">${esc(it.follow)}</div></div>
-      <div>${statusSelect(it)}</div></div>`).join("") + `</div>`;
+            <div class="follow">${esc(it.follow)}</div>${addonHtml(it)}</div>
+            <div>${statusSelect(it)}</div></div>`).join("")
+          : `<div class="empty">Nothing scheduled</div>`}
+      </div></div>`;
+  }).join("") + (()=>{
+    const every=ITEMS.filter(i=>!i.date);
+    if(!every.length) return "";
+    return `<div class="day"><div class="date" style="background:linear-gradient(160deg,#0ea5e9,#6366f1)"><div class="dow">Daily</div><div class="dn">∞</div><div class="mo">all</div></div>
+      <div class="card" style="padding:16px"><div class="head"><span class="title">Every day</span></div>
+      ${every.map(it=>`<div class="row ${cls(statusOf(it))}"><div><div class="meta">${esc(it.area)} · ${esc(it.topic)}</div><div class="res">${esc(it.resource)}</div><div class="follow">${esc(it.follow)}</div></div><div>${statusSelect(it)}</div></div>`).join("")}
+      </div></div>`;
+  })();
+}
+
+/* ---------- all items ---------- */
+function fillFilters(){
+  const a=$("fArea"); [...new Set(ITEMS.map(i=>i.area))].forEach(x=>a.add(new Option(x,x)));
+  const s=$("fStatus"); STATUSES.forEach(x=>s.add(new Option(x,x)));
+}
+function renderAllBody(){
+  const q=$("search").value.toLowerCase(), tab=$("fTab").value, area=$("fArea").value, prio=$("fPrio").value, st=$("fStatus").value;
+  const rows=ITEMS.filter(i=>(!tab||i.tab===tab)&&(!area||i.area===area)&&(!prio||i.priority===prio)&&(!st||statusOf(i)===st)&&(!q||(i.topic+" "+i.resource+" "+i.follow).toLowerCase().includes(q)));
+  $("allCount").textContent=`${rows.length} of ${ITEMS.length} rows`;
+  $("allBody").innerHTML=rows.map(it=>`<tr class="${cls(statusOf(it))}">
+    <td>${it.date?fmtDay(it.date):esc(it.dateLabel)}</td><td>${esc(it.tab)}</td><td>${esc(it.area)}</td>
+    <td>${esc(it.topic)}</td><td>${prioTag(it.priority)}</td><td class="res-cell">${esc(it.resource)} ${srcTag(it.source)}</td>
+    <td class="follow">${esc(it.follow)}</td><td>${statusSelect(it)}</td></tr>`).join("");
+}
+
+/* ---------- render all ---------- */
+function renderAll(){ renderDash(); renderArea(); renderDate(); renderAllBody(); }
+
+/* ---------- events ---------- */
+document.addEventListener("change",e=>{
+  if(e.target.classList.contains("status")){
+    const id=e.target.dataset.id; progress[id]=e.target.value; saveProgress();
+    const wasAllDone = ITEMS.every(i=>statusOf(i)==="Done");
+    renderAll();
+    if(e.target.value==="Done") toast("✅ Nice! Marked done");
+    if(!wasAllDone && ITEMS.every(i=>statusOf(i)==="Done")) toast("🎉 Entire plan complete!");
   }
-  document.getElementById("view-date").innerHTML = html;
-}
-
-// ---------- All items
-function fillFilters() {
-  const areaSel = document.getElementById("fArea");
-  if (areaSel.options.length === 1) {
-    [...new Set(ITEMS.map(i => i.area))].forEach(a => areaSel.add(new Option(a, a)));
-  }
-  const stSel = document.getElementById("fStatus");
-  if (stSel.options.length === 1) STATUSES.forEach(s => stSel.add(new Option(s, s)));
-}
-function renderAll() {
-  const q = document.getElementById("search").value.toLowerCase();
-  const tab = document.getElementById("fTab").value;
-  const area = document.getElementById("fArea").value;
-  const prio = document.getElementById("fPrio").value;
-  const st = document.getElementById("fStatus").value;
-  const rows = ITEMS.filter(i =>
-    (!tab || i.tab === tab) && (!area || i.area === area) && (!prio || i.priority === prio) &&
-    (!st || statusOf(i) === st) &&
-    (!q || (i.topic + " " + i.resource + " " + i.follow).toLowerCase().includes(q)));
-  document.getElementById("allCount").textContent = `${rows.length} of ${ITEMS.length} rows`;
-  document.getElementById("allBody").innerHTML = rows.map(it => `
-    <tr class="${cls(statusOf(it))}">
-      <td>${it.date ? fmtDay(it.date) : esc(it.dateLabel)}</td>
-      <td>${esc(it.tab)}</td>
-      <td>${esc(it.area)}</td>
-      <td>${esc(it.topic)}</td>
-      <td>${prioTag(it.priority)}</td>
-      <td>${esc(it.resource)} ${srcTag(it.source)}</td>
-      <td class="follow">${esc(it.follow)}</td>
-      <td>${statusSelect(it)}</td>
-    </tr>`).join("");
-}
-
-// ---------- Rendering all
-function renderEverything() { renderOverall(); renderArea(); renderDate(); renderAll(); }
-
-// ---------- Events
-document.addEventListener("change", e => {
-  if (e.target.classList.contains("status")) setStatus(e.target.dataset.id, e.target.value);
 });
-document.querySelectorAll("nav button[data-tab]").forEach(b => b.addEventListener("click", () => {
-  document.querySelectorAll("nav button[data-tab]").forEach(x => x.classList.remove("active"));
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.classList.remove("active"));
   b.classList.add("active");
-  ["area","date","all"].forEach(v => document.getElementById("view-"+v).classList.toggle("hidden", v !== b.dataset.tab));
+  ["dash","area","date","all"].forEach(v=>$("view-"+v).classList.toggle("hidden",v!==b.dataset.tab));
+  window.scrollTo({top:0,behavior:"smooth"});
 }));
-["search","fTab","fArea","fPrio","fStatus"].forEach(id => document.getElementById(id).addEventListener("input", renderAll));
+["search","fTab","fArea","fPrio","fStatus"].forEach(id=>$(id).addEventListener("input",renderAllBody));
 
-document.getElementById("exportBtn").onclick = () => {
-  const blob = new Blob([JSON.stringify({exported: new Date().toISOString(), progress}, null, 2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = "placement-progress.json"; a.click();
+$("themeBtn").onclick=()=>{ document.body.classList.toggle("dark"); const dark=document.body.classList.contains("dark");
+  $("themeBtn").textContent=dark?"☀ Light":"🌙 Dark"; try{localStorage.setItem(THEME_KEY,dark?"dark":"light")}catch(e){} };
+try{ if(localStorage.getItem(THEME_KEY)==="dark"){ document.body.classList.add("dark"); $("themeBtn").textContent="☀ Light"; } }catch(e){}
+
+$("exportBtn").onclick=()=>{
+  const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),progress},null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="placement-progress.json"; a.click();
+  toast("⬇ Progress exported");
 };
-document.getElementById("importBtn").onclick = () => document.getElementById("importFile").click();
-document.getElementById("importFile").onchange = async e => {
-  const f = e.target.files[0]; if (!f) return;
-  try {
-    const obj = JSON.parse(await f.text());
-    progress = obj.progress || obj;
-    saveProgress(); renderEverything();
-  } catch (err) { alert("Could not read that file."); }
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{ const obj=JSON.parse(await f.text()); progress=obj.progress||obj; saveProgress(); renderAll(); toast("⬆ Progress imported"); }
+  catch(err){ alert("Could not read that file."); }
 };
-document.getElementById("resetBtn").onclick = () => {
-  if (confirm("Reset all statuses to Not started? Export first if you want a backup.")) {
-    progress = {}; saveProgress(); renderEverything();
-  }
-};
+$("resetBtn").onclick=()=>{ if(confirm("Reset all statuses to Not started? Export first if you want a backup.")){ progress={}; saveProgress(); renderAll(); toast("Progress reset"); } };
 
 fillFilters();
-renderEverything();
-
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+renderAll();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
-
-
 </body>
 </html>
